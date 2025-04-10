@@ -8,6 +8,16 @@
 .nav-link
 {
     color: red !important;
+    border-style: solid;
+    border-width: 1px;
+    border-color: white !important;
+}
+
+.nav-link:hover
+{
+    border-style: solid;
+    border-width: 1px;
+    border-color: red !important;
 }
 
 .border-secondary
@@ -18,4 +28,20 @@
 .text-body-secondary
 {
     color: red !important;
+}
+
+.btn-primary
+{
+    background-color: red !important;
+    color: white !important;
+    border-color: red !important;
+    border-radius: 0;
+}
+
+.btn-primary:hover
+{
+    background-color: white!important;
+    color: red !important;
+    border-color: red !important;
+    border-radius: 0;
 }

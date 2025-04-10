@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Katering</title>
 
+    <!--Bootstrap i stilovi-->
     <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{css/kateringServisStilovi.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -19,17 +20,17 @@
 <body class="d-flex flex-column min-vh-100">
 
     <!--Header-->
-    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom border-secondary">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 border-bottom border-secondary">
         <div class="col-md-3 mb-2 mb-md-0">
-            <a href="/" class="nav-link d-inline-flex link-body-emphasis text-decoration-none fs-4 ms-2">
+            <span class="d-flex align-items-center text-decoration-none text-center fs-3 ms-2 text-body-secondary">
                 <img th:src="@{images/meal-food-icon.svg}" alt="Food logo" width="35" height="35"> &nbspKatering Servis
-            </a>
+            </span>
         </div>
 
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 fs-4 fw-bold">
             <li><a href="#" class="nav-link px-2">POČETNA</a></li>
             <li><a href="#" class="nav-link px-2">MENI</a></li>
-            <li><a href="#" class="nav-link px-2">ODRŽAVANJA</a></li>
+            <li><a href="#" class="nav-link px-2">PROSLAVE</a></li>
         </ul>
 
         <ul class="nav col-md-3 mb-2 justify-content-end mb-md-0 me-2 fs-4">

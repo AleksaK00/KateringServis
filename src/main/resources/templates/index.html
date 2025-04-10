@@ -7,10 +7,73 @@
 </head>
 <body>
 
-<main layout:fragment="content">
+  <main layout:fragment="content">
 
-  <h1>Katering Servis</h1>
-</main>
+    <!--Hero sekcija 1, meni-->
+    <div class="container px-4 py-5">
+      <div class="row flex-lg-row-reverse align-items-center g-5 py-2">
+
+        <div class="col-10 col-sm-8 col-lg-6">
+          <img th:src="@{images/site/Hrana1Slika.jpg}" class="d-block mx-lg-auto img-fluid" alt="Tanjir paste" width="700" height="500" loading="lazy">
+        </div>
+
+        <div class="col-lg-6">
+
+          <h1 class="display-5 fw-bold lh-1 mb-3 text-body-secondary">Pogledajte naš meni</h1>
+
+          <p class="lead">Pogledajte našu raznoliku selekciju hrane i zakažite njenu dostavu, ili izaberite neki od naših pažljivo odabranih setova pogodnih za brzu i jednostavnu organizaciju proslava i ostalih događaja.</p>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+            <a type="button" class="btn btn-primary btn-lg px-4 me-md-2" href="#">Meni</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!--Hero sekcija 2, proslave-->
+    <div class="container px-4 py-5">
+      <div class="row align-items-center g-5 py-2">
+
+        <div class="col-10 col-sm-8 col-lg-6">
+          <img th:src="@{images/site/Hrana3Slika.jpg}" class="d-block mx-lg-auto img-fluid" alt="Tanjiri sa hranom" width="700" height="500" loading="lazy">
+        </div>
+
+        <div class="col-lg-6">
+
+          <h1 class="display-5 fw-bold lh-1 mb-3 text-body-secondary">Zakažite katering za održavanje proslave</h1>
+
+          <p class="lead">Imate bitan događaj za koji je potrebna hrana za veliki broj gostiju? Prepustite kulinarsku organizaciju nama! Zakažite katering usluge za vaše održavanje, izaberite željenu kuhinju, i platite na osnovu broja gostiju.</p>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+            <a type="button" class="btn btn-primary btn-lg px-4 me-md-2" href="#">Zakaži</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!--Hero sekcija 3, registracija/prijavljivanje-->
+    <div class="container px-4 py-5">
+      <div class="row flex-lg-row-reverse align-items-center g-5 py-2">
+
+        <div class="col-10 col-sm-8 col-lg-6">
+          <img th:src="@{images/site/Hrana2Slika.jpg}" class="d-block mx-lg-auto img-fluid" alt="Tanjir paste" width="700" height="500" loading="lazy">
+        </div>
+
+        <div class="col-lg-6">
+
+          <h1 class="display-5 fw-bold lh-1 mb-3 text-body-secondary">Napravite nalog</h1>
+
+          <p class="lead">Izvšite narudžbinu preko menija ili zakažite vašu proslavu. Pregledajte vaše narudžbine i razgovarajte sa menadžerom o vašoj proslavi. Prijavite se, ili ako nemate nalog, registrujte se!</p>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+            <a type="button" class="btn btn-primary btn-lg px-4 me-md-2" href="#">Prijava</a>
+            <a type="button" class="btn btn-primary btn-lg px-4 me-md-2" href="#">Registracija</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
 
 </body>
 </html>
