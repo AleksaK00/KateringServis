@@ -1,7 +1,9 @@
-﻿body
-{
-    font-family: "Roboto Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
+﻿body {
+     font-family: "Nunito", sans-serif;
+     font-optical-sizing: auto;
+     font-weight: 600;
+     font-style: normal;
+ }
 
 .nav-link
 {
