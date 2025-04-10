@@ -1,0 +1,19 @@
+﻿body
+{
+    font-family: "Roboto Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.nav-link
+{
+    color: red !important;
+}
+
+.border-secondary
+{
+    border-color: red !important;
+}
+
+.text-body-secondary
+{
+    color: red !important;
+}
