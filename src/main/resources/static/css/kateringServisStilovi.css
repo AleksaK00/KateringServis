@@ -45,3 +45,25 @@
     border-color: red !important;
     border-radius: 0;
 }
+
+.form-control
+{
+    border-radius: 0 !important;
+}
+
+/*Stilovi sa preuzete log in forme ttps://mdbootstrap.com/docs/standard/extended/login/*/
+.divider:after,
+.divider:before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #eee;
+}
+.h-custom {
+    height: calc(100% - 73px);
+}
+@media (max-width: 450px) {
+    .h-custom {
+        height: 100%;
+    }
+}

@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="@{../static/components/layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>Registracija</title>
+
+</head>
+<body>
+
+<main layout:fragment="content">
+
+  <!--Forma za registracuju-->
+  <section class="mt-5 py-5">
+    <div class="container-fluid h-custom">
+
+      <!--Leva strana sa slikom-->
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-md-9 col-lg-6 col-xl-5">
+          <img th:src="@{images/meal-food-icon.svg}" class="img-fluid" alt="Logo kompanije">
+        </div>
+
+        <!--Desna strana, registraciona forma-->
+        <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+          <form method="post" th:action="@{/register}" th:object="${korisnik}">
+            <div class="d-flex flex-row align-items-center justify-content-center">
+              <h2 class="mb-0 me-3 text-body-secondary">Registracija</h2>
+            </div>
+
+            <div class="divider d-flex align-items-center my-4"></div>
+
+            <!-- Input korisnicko ime -->
+            <div data-mdb-input-init class="form-outline mb-2">
+              <label class="form-label" for="korisnickoIme">Korisničko ime</label>
+              <input type="text" id="korisnickoIme" class="form-control form-control-lg" placeholder="Unesite vaše korisničko ime" th:field="*{korisnickoIme}"/>
+            </div>
+
+            <!-- Input email -->
+            <div data-mdb-input-init class="form-outline mb-2">
+              <label class="form-label" for="email">Email</label>
+              <input type="text" id="email" class="form-control form-control-lg" placeholder="Unesite vaš email" th:field="*{email}"/>
+            </div>
+
+            <!-- Input lozinke-->
+            <div data-mdb-input-init class="form-outline mb-2">
+              <label class="form-label" for="sifra">Lozinka</label>
+              <input type="password" id="sifra" class="form-control form-control-lg" placeholder="Unesite lozinku" th:field="*{sifra}"/ />
+            </div>
+
+            <!-- Input potvrde lozinke-->
+            <div data-mdb-input-init class="form-outline mb-2">
+              <label class="form-label" for="sifraConfirm">Potvrda lozinke</label>
+              <input type="password" id="sifraConfirm" class="form-control form-control-lg" placeholder="Potvrdite lozinku" name="passwordConfirm" />
+            </div>
+
+            <!-- Input ime -->
+            <div data-mdb-input-init class="form-outline mb-2">
+              <label class="form-label" for="ime">Ime</label>
+              <input type="text" id="ime" class="form-control form-control-lg" placeholder="Unesite vaše ime" th:field="*{ime}"/>
+            </div>
+
+            <!-- Input prezime -->
+            <div data-mdb-input-init class="form-outline mb-2">
+              <label class="form-label" for="prezime">Prezime</label>
+              <input type="text" id="prezime" class="form-control form-control-lg" placeholder="Unesite vaše prezime" th:field="*{prezime}"/>
+            </div>
+
+            <!-- Input adresa -->
+            <div data-mdb-input-init class="form-outline mb-2">
+              <label class="form-label" for="adresa">Adresa</label>
+              <input type="text" id="adresa" class="form-control form-control-lg" placeholder="Unesite vašu adresu" th:field="*{adresa}"/>
+            </div>
+
+            <div class="text-center text-lg-start mt-4 pt-2">
+              <input type="submit" class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;" value="Registruj se">
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+</body>
+</html>

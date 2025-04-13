@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Katering</title>
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">KateringServis</title>
 
     <!--Bootstrap i stilovi-->
     <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
@@ -28,14 +28,20 @@
         </div>
 
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 fs-4 fw-bold">
-            <li><a href="#" class="nav-link px-2">POČETNA</a></li>
+            <li><a th:href="@{/}" class="nav-link px-2">POČETNA</a></li>
             <li><a href="#" class="nav-link px-2">MENI</a></li>
             <li><a href="#" class="nav-link px-2">PROSLAVE</a></li>
         </ul>
 
+        <!--Linkovi za prijavu u slucaju ne ulogovanog korisnika, pristup odgovarajucim panelima u slucaju ulogovanog-->
         <ul class="nav col-md-3 mb-2 justify-content-end mb-md-0 me-2 fs-4">
-            <li><a href="#" class="nav-link px-2">Prijava</a></li>
-            <li><a href="#" class="nav-link px-2">Registracija</a></li>
+            <li><a th:href="@{/login}" sec:authorize="${isAnonymous()}" class="nav-link px-2">Prijava</a></li>
+            <li><a th:href="@{/register}" sec:authorize="${isAnonymous()}" class="nav-link px-2">Registracija</a></li>
+            <li><a th:href="@{/korisnik/panel}" sec:authorize="${hasRole('KORISNIK')}" th:text="${#authentication.name}" class="nav-link px-2"></a></li>
+            <li><a th:href="@{/menadzer/panel}" sec:authorize="${hasAnyRole('MENADZER', 'ADMIN')}" class="nav-link px-2">Menadžer Panel</a></li>
+            <li><a th:href="@{/admin/panel}" sec:authorize="${hasRole('ADMIN')}" class="nav-link px-2">Admin Panel</a></li>
+            <li><a th:href="@{/logout}" sec:authorize="${hasAnyRole('MENADZER', 'ADMIN', 'KORISNIK')}" class="nav-link px-2">Odjava</a></li>
+
         </ul>
     </header>
 
