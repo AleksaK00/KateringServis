@@ -41,7 +41,8 @@ public class SecurityConfiguration {
                         }
                 ).formLogin(formLogin -> formLogin
                         .loginPage("/login")  //definise stranicu za login
-                        .defaultSuccessUrl("/", true)  //Redirekcija u slucaju uspesnog logina
+                        .defaultSuccessUrl("/", true) //Redirekcija u slucaju uspesnog logina
+                        .failureUrl("/login?greska=true") //Neuspesni login url
                         .permitAll())
                 .logout(logout -> logout.logoutUrl("/logout") //Definise logout url
                         .logoutSuccessUrl("/")  //Redirekcija posle logouta

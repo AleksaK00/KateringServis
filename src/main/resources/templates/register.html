@@ -43,7 +43,7 @@
             <!-- Input lozinke-->
             <div data-mdb-input-init class="form-outline mb-2">
               <label class="form-label" for="sifra">Lozinka</label>
-              <input type="password" id="sifra" class="form-control form-control-lg" placeholder="Unesite lozinku" th:field="*{sifra}"/ />
+              <input type="password" id="sifra" class="form-control form-control-lg" placeholder="Unesite lozinku" th:field="*{sifra}"/>
             </div>
 
             <!-- Input potvrde lozinke-->
@@ -80,6 +80,12 @@
     </div>
 
   </section>
+
+  <!-- Poruka Greske -->
+  <div class="text-center">
+    <!--/*@thymesVar id="greska" type=""*/-->
+    <h3 class="text-body-secondary" th:if="${greska != null}" th:text="${greska}"></h3>
+  </div>
 
 </main>
 

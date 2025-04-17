@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 public class Korisnik {
 
-    //Polja tabele
+    //Polja tabele, koriscena model validacija zbog registracije korisnika
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
