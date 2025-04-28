@@ -51,6 +51,16 @@
     border-radius: 0 !important;
 }
 
+.card
+{
+    border-radius: 0 !important;
+}
+
+.card-img-top
+{
+    border-radius: 0 !important;
+}
+
 /*Stilovi sa preuzete log in forme ttps://mdbootstrap.com/docs/standard/extended/login/*/
 .divider:after,
 .divider:before {
@@ -66,4 +76,35 @@
     .h-custom {
         height: 100%;
     }
+}
+
+/*Stilovi preuzeti sa kartice za proizvode https://bootstrapexamples.com/@mateo/product-card-component-using-bootstrap-5*/
+.product-card {
+    transition: all 0.3s ease;
+    overflow: hidden;
+    cursor: pointer;
+    height: 570px;
+}
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+.product-image {
+    transition: all 0.5s ease;
+    height: 300px;
+    object-fit: cover;
+}
+.product-card:hover .product-image {
+    transform: scale(1.05);
+}
+.badge-custom {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+}
+.price {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
 }

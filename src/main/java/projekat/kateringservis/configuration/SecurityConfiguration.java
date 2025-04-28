@@ -31,7 +31,7 @@ public class SecurityConfiguration {
                         authorize -> {
                             //Resursi i stranice koje su dozvoljene svima, ukljucujuci ne ulogovane korisnike
                             authorize.requestMatchers("/css/**", "/js/**", "/images/**").permitAll();
-                            authorize.requestMatchers("/login", "/error/**", "/logout", "/", "/meni", "/register").permitAll();
+                            authorize.requestMatchers("/login", "/error/**", "/logout", "/", "/meni/**", "/register").permitAll();
                             //Stranice koje zahtevaju specificnu ulogu za autorizaciju
                             authorize.requestMatchers("/admin/**").hasRole("ADMIN");
                             authorize.requestMatchers("/menadzer/**").hasAnyRole("MENADZER", "ADMIN");
