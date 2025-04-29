@@ -61,6 +61,26 @@
     border-radius: 0 !important;
 }
 
+.bg-primary
+{
+    background-color: red !important;
+}
+
+.btn-secondary
+{
+    color: red !important;
+    border-style: solid;
+    border-width: 1px;
+    border-color: white !important;
+    background-color: white !important;
+    border-radius: 0;
+}
+.btn-secondary:hover
+{
+    border-style: solid;
+    border-color: red !important;
+}
+
 /*Stilovi sa preuzete log in forme ttps://mdbootstrap.com/docs/standard/extended/login/*/
 .divider:after,
 .divider:before {

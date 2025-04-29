@@ -22,6 +22,7 @@ public class Artikal {
     private String kategorija;
     private String opis;
     private double cena;
+    private boolean naAkciji;
 
     //Relacije tabele
     @OneToMany(mappedBy = "artikal")

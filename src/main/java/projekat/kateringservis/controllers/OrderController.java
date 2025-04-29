@@ -31,4 +31,15 @@ public class OrderController {
 
         return "menu";
     }
+
+    //Metoda koja vraca pogled sa meniom za narucivanje setova
+    @GetMapping("/meni/setovi")
+    public String prikaziSetove(Model model)
+    {
+        //Hvatanja setova i stavljanje u model
+        List<Artikal> setoviMeni = artikalService.getByCategory("SET");
+        model.addAttribute("setoviMeni", setoviMeni);
+
+        return "menuSetovi";
+    }
 }
