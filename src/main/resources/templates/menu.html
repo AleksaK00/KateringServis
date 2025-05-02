@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>Meni</title>
 
+    <!--Javascript za dodavanje u korpu putem AJAX-a-->
+    <script th:src="@{/js/korpaAjax.js}"></script>
+
 </head>
 <body>
 
@@ -37,8 +40,10 @@
                     <h5 class="card-title mb-3 fw-bold text-body-secondary" th:text="${artikal.getNaziv()}"></h5>
                     <p class="card-text text-muted mb-4 flex-grow-1" th:text="${artikal.getOpis()}"></p>
                     <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <span class="price" th:text="${artikal.getCena()}"></span>
-                        <button class="btn btn-primary">
+                        <span class="price" th:text="${#numbers.formatCurrency(artikal.getCena())}"></span>
+
+                        <!--Dugme za dodavanje u kurpu-->
+                        <button class="btn btn-primary dodajuKorpu" th:onclick="|dodajuKorpu(${artikal.getId()})|">
                             Dodaj u korpu
                         </button>
                     </div>
@@ -71,8 +76,10 @@
                     <h5 class="card-title mb-3 fw-bold text-body-secondary" th:text="${artikal.getNaziv()}"></h5>
                     <p class="card-text text-muted mb-4 flex-grow-1" th:text="${artikal.getOpis()}"></p>
                     <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <span class="price" th:text="${artikal.getCena()}"></span>
-                        <button class="btn btn-primary">
+                        <span class="price" th:text="${#numbers.formatCurrency(artikal.getCena())}"></span>
+
+                        <!--Dugme za dodavanje u kurpu-->
+                        <button class="btn btn-primary dodajuKorpu" th:onclick="|dodajuKorpu(${artikal.getId()})|">
                             Dodaj u korpu
                         </button>
                     </div>
@@ -80,6 +87,11 @@
             </div>
 
         </div>
+    </div>
+
+    <!--Dugme za prelazak na stranicu za pregled korpe/narucivanje-->
+    <div class="row my-5 justify-content-center">
+        <a th:href="@{/korpa}" class="btn btn-lg btn-primary">Naruči</a>
     </div>
 
 </main>

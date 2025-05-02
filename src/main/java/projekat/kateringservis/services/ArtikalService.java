@@ -6,6 +6,7 @@ import projekat.kateringservis.models.Artikal;
 import projekat.kateringservis.repositories.ArtikalRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ArtikalService {
@@ -20,5 +21,10 @@ public class ArtikalService {
     //Metoda za hvatanje svih artikala prema kategoriji artikla
     public List<Artikal> getByCategory(String kategorija) {
         return artikalRepository.findByKategorija(kategorija);
+    }
+
+    //Metoda za hvatanje artikla po id-u
+    public Optional<Artikal> getById(int id) {
+        return artikalRepository.findById(id);
     }
 }
