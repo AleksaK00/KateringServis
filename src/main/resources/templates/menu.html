@@ -43,7 +43,8 @@
                         <span class="price" th:text="${#numbers.formatCurrency(artikal.getCena())}"></span>
 
                         <!--Dugme za dodavanje u kurpu-->
-                        <button class="btn btn-primary dodajuKorpu" th:onclick="|dodajuKorpu(${artikal.getId()})|">
+                        <button class="btn btn-primary dodajuKorpu" data-bs-toggle="modal" data-bs-target="#dodajuKorpuModal"
+                                th:data-artikal-id="${artikal.getId()}" th:data-artikal-naziv="${artikal.getNaziv()}">
                             Dodaj u korpu
                         </button>
                     </div>
@@ -79,7 +80,8 @@
                         <span class="price" th:text="${#numbers.formatCurrency(artikal.getCena())}"></span>
 
                         <!--Dugme za dodavanje u kurpu-->
-                        <button class="btn btn-primary dodajuKorpu" th:onclick="|dodajuKorpu(${artikal.getId()})|">
+                        <button class="btn btn-primary dodajuKorpu" data-bs-toggle="modal" data-bs-target="#dodajuKorpuModal"
+                                th:data-artikal-id="${artikal.getId()}" th:data-artikal-naziv="${artikal.getNaziv()}">
                             Dodaj u korpu
                         </button>
                     </div>
@@ -92,6 +94,27 @@
     <!--Dugme za prelazak na stranicu za pregled korpe/narucivanje-->
     <div class="row my-5 justify-content-center">
         <a th:href="@{/korpa}" class="btn btn-lg btn-primary">Naruči</a>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="dodajuKorpuModal" tabindex="-1" aria-labelledby="dodajuKorpuModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="dodajuKorpuModalLabel"></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="" alt="slika proizvoda" id="slikaArtikla" class="img-fluid">
+                    <label for="kolicina">Količina</label>
+                    <input type="number" class="form-control" id="kolicina" min="1" max="10" value="1">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Nazad</button>
+                    <button type="button" class="btn btn-success" id="potvrda">Dodaj u korpu</button>
+                </div>
+            </div>
+        </div>
     </div>
 
 </main>

@@ -66,4 +66,9 @@ public class KorisnikService implements UserDetailsService {
         return "uspeh";
 
     }
+
+    //Metoda vraca korisnika po njegovom korisnickom imenu
+    public Optional<Korisnik> getByKorisnickoime(String korisnickoIme) {
+        return korisnikRepository.findByKorisnickoIme(korisnickoIme);
+    }
 }

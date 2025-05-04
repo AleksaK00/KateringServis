@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="@{../static/components/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Datum i adresa narudžbine</title>
+
+</head>
+<body>
+
+<main layout:fragment="content">
+
+    <div class="row mt-5 justify-content-center">
+
+        <h2 class="text-center text-body-secondary display-3 mb-3 fw-medium">Unesite adresu i datum dostave</h2>
+
+        <div class="col-md-6 border border-secondary">
+
+            <!--Forma za unos adrese i datuma-->
+            <div class="px-5">
+                <form method="post" th:action="@{/narudzbina/naruci}">
+
+                    <label for="adresa" class="form-label mt-4">Adresa</label>
+                    <input id="adresa" type="text" name="adresa" class="form-control" th:value="${adresa}" required>
+
+                    <label for="datum" class="form-label mt-4">Datum i Vreme</label>
+                    <input id="datum" type="datetime-local" name="datum" class="form-control mb-4" required>
+
+                    <!--/*@thymesVar id="greska" type=""*/-->
+                    <div class="text-center text-lg-start mb-4 pt-2" th:if="${greska != null}">
+                        <p class="text-body-secondary fs-5" th:text="${greska}"></p>
+                    </div>
+
+                    <div class="row justify-content-center mb-4">
+                        <input type="submit" value="Potvrdi Narudžbinu" class="btn btn-primary w-50">
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</main>
+
+</body>
+</html>

@@ -33,11 +33,11 @@
             <li><a href="#" class="nav-link px-2">PROSLAVE</a></li>
         </ul>
 
-        <!--Linkovi za prijavu u slucaju ne ulogovanog korisnika, pristup odgovarajucim panelima u slucaju ulogovanog-->
+        <!--Linkovi za prijavu u slucaju ne ulogovanog korisnika, pristup odgovarajucim panelima u slucaju ulogovanog, i korpa za ulogovanog korisnika i gosta-->
         <ul class="nav col-md-3 mb-2 justify-content-end mb-md-0 me-2 fs-4">
+            <li><a th:href="@{/korpa}" sec:authorize="${hasRole('KORISNIK') or isAnonymous()}" class="nav-link px-2"><i class="bi bi-cart-fill" id="brojArtikala" th:text="*{session.korpa} ? *{session.korpa.size()} : '0'"></i></a></li>
             <li><a th:href="@{/login}" sec:authorize="${isAnonymous()}" class="nav-link px-2">Prijava</a></li>
             <li><a th:href="@{/register}" sec:authorize="${isAnonymous()}" class="nav-link px-2">Registracija</a></li>
-            <li><a th:href="@{/korpa}" sec:authorize="${hasRole('KORISNIK')}" class="nav-link px-2"><i class="bi bi-cart-fill" id="brojArtikala" th:text="*{session.korpa} ? *{session.korpa.size()} : '0'"></i></a></li>
             <li><a th:href="@{/korisnik/panel}" sec:authorize="${hasRole('KORISNIK')}" th:text="${#authentication.name}" class="nav-link px-2"></a></li>
             <li><a th:href="@{/menadzer/panel}" sec:authorize="${hasAnyRole('MENADZER', 'ADMIN')}" class="nav-link px-2">Menadžer Panel</a></li>
             <li><a th:href="@{/admin/panel}" sec:authorize="${hasRole('ADMIN')}" class="nav-link px-2">Admin Panel</a></li>
@@ -65,6 +65,10 @@
             <li class="ms-3"><a class="text-body-secondary" href="https://www.instagram.com" aria-label="Facebook"><i class="bi bi-instagram"></i></a></li>
         </ul>
     </footer>
+
+    <section layout:fragment="skripte">
+
+    </section>
 
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>

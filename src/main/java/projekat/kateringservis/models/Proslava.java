@@ -19,7 +19,7 @@ public class Proslava {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private float cena;
+    private double cena;
     private String adresa;
     private int brGostiju;
     private String napomena;

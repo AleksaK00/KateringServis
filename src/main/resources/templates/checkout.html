@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="@{../static/components/layout}">
 <head>
   <meta charset="UTF-8">
-  <title>Meni</title>
+  <title>Korpa</title>
 
 </head>
 <body>
@@ -60,12 +60,12 @@
                   <div class="d-flex justify-content-center align-items-center">
                     <form th:action="@{/korpa/smanji}" method="post" class="d-inline">
                       <input type="hidden" name="artikalId" th:value="${stavka.getArtikal().getId()}">
-                      <button class="btn btn-sm btn-outline-secondary" type="submit">-</button>
+                      <input class="btn btn-sm btn-outline-secondary" type="submit" value="-">
                     </form>
                     <span class="mx-2" th:text="${stavka.getKolicina()}">1</span>
                     <form th:action="@{/korpa/povecaj}" method="post" class="d-inline">
                       <input type="hidden" name="artikalId" th:value="${stavka.getArtikal().getId()}">
-                      <button class="btn btn-sm btn-outline-secondary" type="submit">+</button>
+                      <input class="btn btn-sm btn-outline-secondary" type="submit" value="+">
                     </form>
                   </div>
                 </td>
@@ -105,7 +105,7 @@
 
         <!--opcija za narucivanje-->
         <div class="d-flex justify-content-end mt-3">
-          <a th:href="@{/korpa/checkout}" class="btn btn-success">
+          <a th:href="@{/narudzbina/adresa}" class="btn btn-success">
             <i class="bi bi-cart-check me-2"></i>Naruči
           </a>
         </div>

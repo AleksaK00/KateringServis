@@ -134,3 +134,13 @@
     font-weight: 600;
     color: #2c3e50;
 }
+
+/*Stilovi za stranicu poruke*/
+.message-card {
+    background: white;
+    border-radius: 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in;
+}

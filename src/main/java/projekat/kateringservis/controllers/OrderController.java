@@ -4,118 +4,112 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
-import projekat.kateringservis.models.Artikal;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import projekat.kateringservis.models.Korisnik;
+import projekat.kateringservis.models.Narudzbina;
 import projekat.kateringservis.models.Stavka;
 import projekat.kateringservis.services.ArtikalService;
+import projekat.kateringservis.services.KorisnikService;
+import projekat.kateringservis.services.NarudzbinaService;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 @Controller
+@RequestMapping("/narudzbina")
 public class OrderController {
 
+    private final NarudzbinaService narudzbinaService;
     ArtikalService artikalService;
     LocaleResolver localeResolver;
+    KorisnikService korisnikService;
 
     @Autowired
-    public OrderController(ArtikalService artikalService, LocaleResolver localeResolver) {
+    public OrderController(ArtikalService artikalService, LocaleResolver localeResolver, KorisnikService korisnikService, NarudzbinaService narudzbinaService) {
         this.artikalService = artikalService;
+        this.korisnikService = korisnikService;
         this.localeResolver = localeResolver;
+        this.narudzbinaService = narudzbinaService;
     }
 
-    //Metoda koja vraca pogled sa meniom za narucivanje artikala.
-    @GetMapping("/meni/proizvodi")
-    public String prikaziMeni(Model model, HttpServletRequest request, HttpServletResponse response) {
+    //Metoda koja vraca pogled sa formom za unos adrese i datuma dostave, default ispis je adresa korisnickog naloga
+    @GetMapping("/adresa")
+    public String unesiAdresu(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request, HttpServletResponse response) {
 
-        //Hvatanja slanih i slatkih artikala i stavljanje u model
-        List<Artikal> slaniMeni = artikalService.getByCategory("SLANO");
-        List<Artikal> slatkiMeni = artikalService.getByCategory("SLATKO");
-        model.addAttribute("slaniMeni", slaniMeni);
-        model.addAttribute("slatkiMeni", slatkiMeni);
+        //Hvatanje ulogovanog korisnika i dodavanja u adrese u model
+        Optional<Korisnik> korisnik = korisnikService.getByKorisnickoime(userDetails.getUsername());
+        if (korisnik.isPresent()) {
+            model.addAttribute("adresa", korisnik.get().getAdresa());
+        }
+        else {
+            return "redirect:/login";
+        }
 
-        //Postavljanje lokala na srpski zarad formatiranja valute
+        //dodavanje sutrasnjeg dana u model zarad minimalnog unosa datuma i lokala zarad ispisa datuma
+        LocalDateTime sutra = LocalDateTime.now().plusDays(1);
+        model.addAttribute("sutra", sutra);
         localeResolver.setLocale(request, response, new Locale("sr", "RS", "Latn"));
 
-        return "menu";
+        return "addressInput";
     }
 
-    //Metoda koja vraca pogled sa meniom za narucivanje setova
-    @GetMapping("/meni/setovi")
-    public String prikaziSetove(Model model, HttpServletRequest request, HttpServletResponse response)
-    {
-        //Hvatanja setova i stavljanje u model
-        List<Artikal> setoviMeni = artikalService.getByCategory("SET");
-        model.addAttribute("setoviMeni", setoviMeni);
+    @PostMapping("/naruci")
+    public String naruci(HttpSession sesija, @RequestParam String adresa, @RequestParam LocalDateTime datum, RedirectAttributes redirectAttributes, Model model,
+                         @AuthenticationPrincipal UserDetails userDetails) {
 
-        //Postavljanje lokala na srpski zarad formatiranja valute
-        localeResolver.setLocale(request, response, new Locale("sr", "RS", "Latn"));
+        //Validacija
+        if (adresa.isEmpty() || datum.isBefore(LocalDateTime.now().plusDays(1))) {
+            redirectAttributes.addFlashAttribute("greska", "Sva polja moraju biti popunjena!");
+            return "redirect:/narudzbina/adresa";
+        }
+        if (datum.isAfter(LocalDateTime.now().plusDays(60))) {
+            redirectAttributes.addFlashAttribute("greska", "Ne primamo narudžbine proizvoda više od 60 dana unapred! Pogledajte proslave za zakazivanje velikih događaja.");
+            return "redirect:/narudzbina/adresa";
+        }
+        LocalTime vreme = datum.toLocalTime();
+        if (vreme.isBefore(LocalTime.of(8, 0)) || vreme.isAfter(LocalTime.of(22, 0)) ) {
+            redirectAttributes.addFlashAttribute("greska", "Dostava je dostupna od 08:00 do 22:00!");
+            return "redirect:/narudzbina/adresa";
+        }
 
-        return "menuSetovi";
-    }
+        //Provera da li je korisnik ulogovan
+        Optional<Korisnik> korisnik = korisnikService.getByKorisnickoime(userDetails.getUsername());
+        if (korisnik.isEmpty()) {
+            return "redirect:/login";
+        }
 
-    //Metoda koja dodaje artikal u korpu
-    @PostMapping("/korpa/dodaj")
-    ResponseEntity<Map<String, Object>> dodajuKorpu(HttpSession sesija, @RequestBody Stavka noviArtikal) {
-
-        //Hvatanje korpe iz sesije i provera da li je prazna
+        //Hvatanje sesije i provera da li je korpa prazna
         @SuppressWarnings("unchecked")
         List<Stavka> korpa = (List<Stavka>)sesija.getAttribute("korpa");
         if (korpa == null) {
-            korpa = new ArrayList<>();
+            model.addAttribute("poruka", "Vaša korpa je prazna!");
+            model.addAttribute("tekstDugme", "Pogledajte meni");
+            model.addAttribute("linkDugme", "/meni/proizvodi");
+            return "messagePage";
         }
 
-        //Hvatanje artikla na osnovu id-a
-        Optional<Artikal> artikal = artikalService.getById(noviArtikal.getArtikal().getId());
-        if (artikal.isEmpty()) {
-            throw new IllegalArgumentException("Artikal sa id-om " + noviArtikal.getArtikal().getId() + " ne postoji!");
+        //Dodavanje narudzbine u bazi i brisanje sesije
+        Narudzbina narudzbina = narudzbinaService.kreirajNarudzbinu(korpa, adresa, datum, korisnik.get());
+        if (narudzbina == null) {
+            model.addAttribute("poruka", "Greška u kreiranju narudžbine");
+            model.addAttribute("tekstDugme", "Nazad na početnu");
+            model.addAttribute("linkDugme", "/");
+            return "messagePage";
         }
+        sesija.removeAttribute("korpa");
 
-        //Provera da li stavka/artikal vec postoji u korpi. Povecanje kolicine ako postoji, dodavanje ako ne postoji
-        Optional<Stavka> stavkaPostoji = korpa.stream().filter(s -> s.getArtikal().getId() == noviArtikal.getArtikal().getId()).findFirst();
-        if (stavkaPostoji.isPresent()) {
-            stavkaPostoji.get().setKolicina(stavkaPostoji.get().getKolicina() + noviArtikal.getKolicina());
-        }
-        else {
-            noviArtikal.setArtikal(artikal.get());
-            korpa.add(noviArtikal);
-            sesija.setAttribute("korpa", korpa);
-        }
-
-        //Stavljanje broja artikala i provere uspesnosti u odgovor
-        Map<String, Object> response = new HashMap<>();
-        response.put("uspeh", true);
-        response.put("brojArtikala", korpa.size());
-
-        return ResponseEntity.ok(response);
-    }
-
-    //Metoda koja vraca pogled sa artiklima u korpi i opcijom za narucivanje
-    @GetMapping("/korpa")
-    public String prikaziKorpu(HttpSession sesija, Model model, HttpServletRequest request, HttpServletResponse response) {
-
-        //Dodavanje korpe iz sesije u model
-        @SuppressWarnings("unchecked")
-        List<Stavka> korpa = (List<Stavka>)sesija.getAttribute("korpa");
-        model.addAttribute("korpa", korpa);
-
-        //Dodavanje ukupne cene u model
-        double ukupnaCena = 0;
-        if (korpa != null) {
-            for (Stavka stavka : korpa) {
-                ukupnaCena += stavka.getArtikal().getCena() * stavka.getKolicina();
-            }
-        }
-        model.addAttribute("ukupnaCena", ukupnaCena);
-
-        //Postavljanje lokala na srpski zarad formatiranja valute
-        localeResolver.setLocale(request, response, new Locale("sr", "RS", "Latn"));
-
-        return "checkout";
+        //Ispis poruke o uspehu
+        model.addAttribute("poruka", "Uspešno ste kreirali narudžbinu!");
+        model.addAttribute("tekstDugme", "pogledajte vaše narudžbine");
+        model.addAttribute("linkDugme", "/"); //Promeni kasnije da vodi ka stranici za pregled narudžbina
+        return "messagePage";
     }
 }
