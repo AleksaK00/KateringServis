@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="@{../static/components/layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>Početna</title>
+
+</head>
+<body>
+
+<main layout:fragment="content">
+
+  <!--Hero sekcija-->
+  <div class="container px-4 py-5">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-2">
+
+      <div class="col-10 col-sm-8 col-lg-6">
+        <img th:src="@{images/site/proslava.jpg}" class="d-block mx-lg-auto img-fluid" alt="Tanjir paste" width="700" height="500" loading="lazy">
+      </div>
+
+      <div class="col-lg-6">
+
+        <h1 class="display-5 fw-bold lh-1 mb-3 text-body-secondary">Događaji i proslave</h1>
+
+        <p class="lead">
+          Ukoliko želite da unajmite usluge naših kuvara i uživate u pripremljena tri obroka, sve što treba da uradite je da popunite formular sa brojem osoba, adresom i vremenom održavanja.
+          Prilikom promene broja osoba, možete videti i cenu za dati broj osoba. Da bi ste završili zakazivanje morate biti prijavljeni!
+          Na zakazivanje, na stranici vašeg naloga imate mogućnost da razgovarate sa našim menadžerom o željenoj hrani, tipu kuhinje i ostalim željenim detaljima.
+          Cena po osobi je <span th:text="${#numbers.formatCurrency(cena)}"></span>. Ostvarite popust od 10% za proslave veće od 100 osoba.
+        </p>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-3 justify-content-center">
+
+    <h2 class="text-center text-body-secondary display-3 mb-3 fw-medium">Informacije o događaju</h2>
+
+    <div class="col-md-6 border border-secondary">
+
+      <!--Forma za unos adrese i datuma-->
+      <div class="px-5">
+        <form method="post" th:action="@{/proslave/zakazi}">
+
+          <label for="adresa" class="form-label mt-4">Adresa</label>
+          <input id="adresa" type="text" name="adresa" class="form-control" placeholder="Unesite adresu događaja" required>
+
+          <label for="datum" class="form-label mt-4">Datum i Vreme</label>
+          <input id="datum" type="datetime-local" name="datum" class="form-control" required>
+
+          <label for="brOsoba" class="form-label mt-4">Broj osoba</label>
+          <input id="brOsoba" type="number" name="brOsoba" class="form-control" min="20" max="200" value="20" required onchange="IzmeniCenu()">
+
+          <label for="napomena" class="form-label mt-4">Napomena, želje i slično</label>
+          <textarea id="napomena" type="number" name="napomena" class="form-control mb-4"></textarea>
+
+          <!--/*@thymesVar id="greska" type=""*/-->
+          <div class="text-center text-lg-start mb-4 pt-2" th:if="${greska != null}">
+            <p class="text-body-secondary fs-5" th:text="${greska}"></p>
+          </div>
+
+          <div class="row justify-content-center mb-4">
+            <input type="submit" value="Zakaži" class="btn btn-primary w-50">
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!--Ispis cene-->
+  <div class="row my-3">
+    <h4 class="fs-5 text-center">Cena</h4>
+    <h2 class="display-4 text-center text-body-secondary" id="cena" th:data-cena="${cena}" th:text="${#numbers.formatCurrency(20 * cena)}"></h2>
+  </div>
+
+</main>
+
+<section layout:fragment="skripte">
+  <script th:src="@{/js/proslaveCena.js}"></script>
+</section>
+
+</body>
+</html>

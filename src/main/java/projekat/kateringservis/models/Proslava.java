@@ -30,4 +30,13 @@ public class Proslava {
     private Korisnik korisnik;
     @OneToMany(mappedBy = "proslava")
     private Set<Poruka> poruke;
+
+    public Proslava(Korisnik korisnik, String adresa, int brGostiju, double cena, LocalDateTime datum, String napomena) {
+        this.korisnik = korisnik;
+        this.adresa = adresa;
+        this.brGostiju = brGostiju;
+        this.cena = cena;
+        this.datum = datum;
+        this.napomena = napomena;
+    }
 }

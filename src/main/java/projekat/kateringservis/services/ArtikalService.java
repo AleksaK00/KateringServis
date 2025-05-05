@@ -27,4 +27,10 @@ public class ArtikalService {
     public Optional<Artikal> getById(int id) {
         return artikalRepository.findById(id);
     }
+
+    //Metoda za hvatanje cene po osobi proslave
+    public double getPriceByPerson() {
+        Artikal artikal = artikalRepository.findByKategorija("PROSLAVA").getFirst();
+        return artikal.getCena();
+    }
 }

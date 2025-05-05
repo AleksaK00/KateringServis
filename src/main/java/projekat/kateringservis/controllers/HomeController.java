@@ -10,4 +10,9 @@ public class HomeController {
     public String pocetna() {
         return "index";
     }
+
+    @GetMapping("/obavestenje")
+    public String obavestenje() {
+        return "messagePage";
+    }
 }

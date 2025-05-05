@@ -42,7 +42,7 @@ public class OrderController {
 
     //Metoda koja vraca pogled sa formom za unos adrese i datuma dostave, default ispis je adresa korisnickog naloga
     @GetMapping("/adresa")
-    public String unesiAdresu(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request, HttpServletResponse response) {
+    public String unesiAdresu(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
 
         //Hvatanje ulogovanog korisnika i dodavanja u adrese u model
         Optional<Korisnik> korisnik = korisnikService.getByKorisnickoime(userDetails.getUsername());
@@ -90,26 +90,26 @@ public class OrderController {
         @SuppressWarnings("unchecked")
         List<Stavka> korpa = (List<Stavka>)sesija.getAttribute("korpa");
         if (korpa == null) {
-            model.addAttribute("poruka", "Vaša korpa je prazna!");
-            model.addAttribute("tekstDugme", "Pogledajte meni");
-            model.addAttribute("linkDugme", "/meni/proizvodi");
-            return "messagePage";
+            redirectAttributes.addFlashAttribute("poruka", "Vaša korpa je prazna!");
+            redirectAttributes.addFlashAttribute("tekstDugme", "Pogledajte meni");
+            redirectAttributes.addFlashAttribute("linkDugme", "/meni/proizvodi");
+            return "redirect:/obavestenje";
         }
 
         //Dodavanje narudzbine u bazi i brisanje sesije
         Narudzbina narudzbina = narudzbinaService.kreirajNarudzbinu(korpa, adresa, datum, korisnik.get());
         if (narudzbina == null) {
-            model.addAttribute("poruka", "Greška u kreiranju narudžbine");
-            model.addAttribute("tekstDugme", "Nazad na početnu");
-            model.addAttribute("linkDugme", "/");
-            return "messagePage";
+            redirectAttributes.addFlashAttribute("poruka", "Greška u kreiranju narudžbine");
+            redirectAttributes.addFlashAttribute("tekstDugme", "Nazad na početnu");
+            redirectAttributes.addFlashAttribute("linkDugme", "/");
+            return "redirect:/obavestenje";
         }
         sesija.removeAttribute("korpa");
 
         //Ispis poruke o uspehu
-        model.addAttribute("poruka", "Uspešno ste kreirali narudžbinu!");
-        model.addAttribute("tekstDugme", "pogledajte vaše narudžbine");
-        model.addAttribute("linkDugme", "/"); //Promeni kasnije da vodi ka stranici za pregled narudžbina
-        return "messagePage";
+        redirectAttributes.addFlashAttribute("poruka", "Uspešno ste kreirali narudžbinu!");
+        redirectAttributes.addFlashAttribute("tekstDugme", "pogledajte vaše narudžbine");
+        redirectAttributes.addFlashAttribute("linkDugme", "/"); //Promeni kasnije da vodi ka stranici za pregled narudžbina
+        return "redirect:/obavestenje";
     }
 }
