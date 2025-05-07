@@ -38,7 +38,7 @@
             <li><a th:href="@{/korpa}" sec:authorize="${hasRole('KORISNIK') or isAnonymous()}" class="nav-link px-2"><i class="bi bi-cart-fill" id="brojArtikala" th:text="*{session.korpa} ? *{session.korpa.size()} : '0'"></i></a></li>
             <li><a th:href="@{/login}" sec:authorize="${isAnonymous()}" class="nav-link px-2">Prijava</a></li>
             <li><a th:href="@{/register}" sec:authorize="${isAnonymous()}" class="nav-link px-2">Registracija</a></li>
-            <li><a th:href="@{/korisnik/panel}" sec:authorize="${hasRole('KORISNIK')}" th:text="${#authentication.name}" class="nav-link px-2"></a></li>
+            <li><a th:href="@{/korisnik/profil}" sec:authorize="${hasRole('KORISNIK')}" th:text="${#authentication.name}" class="nav-link px-2"></a></li>
             <li><a th:href="@{/menadzer/panel}" sec:authorize="${hasAnyRole('MENADZER', 'ADMIN')}" class="nav-link px-2">Menadžer Panel</a></li>
             <li><a th:href="@{/admin/panel}" sec:authorize="${hasRole('ADMIN')}" class="nav-link px-2">Admin Panel</a></li>
             <li><a th:href="@{/logout}" sec:authorize="${hasAnyRole('MENADZER', 'ADMIN', 'KORISNIK')}" class="nav-link px-2">Odjava</a></li>

@@ -87,6 +87,11 @@
     border-color: red !important;
 }
 
+thead.table-primary{
+    color: white !important;
+    background-color: red !important;
+}
+
 /*Stilovi sa preuzete log in forme ttps://mdbootstrap.com/docs/standard/extended/login/*/
 .divider:after,
 .divider:before {

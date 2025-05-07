@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,6 +21,7 @@ public class Narudzbina {
     private double cena;
     private String adresa;
     private LocalDateTime datum;
+    private boolean jeOtkazana;
 
     //Relacije tabele
     @ManyToOne

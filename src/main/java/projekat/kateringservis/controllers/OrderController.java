@@ -18,7 +18,6 @@ import projekat.kateringservis.services.ArtikalService;
 import projekat.kateringservis.services.KorisnikService;
 import projekat.kateringservis.services.NarudzbinaService;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -42,7 +41,7 @@ public class OrderController {
 
     //Metoda koja vraca pogled sa formom za unos adrese i datuma dostave, default ispis je adresa korisnickog naloga
     @GetMapping("/adresa")
-    public String unesiAdresu(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+    public String unesiAdresu(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request, HttpServletResponse response) {
 
         //Hvatanje ulogovanog korisnika i dodavanja u adrese u model
         Optional<Korisnik> korisnik = korisnikService.getByKorisnickoime(userDetails.getUsername());
@@ -62,7 +61,7 @@ public class OrderController {
     }
 
     @PostMapping("/naruci")
-    public String naruci(HttpSession sesija, @RequestParam String adresa, @RequestParam LocalDateTime datum, RedirectAttributes redirectAttributes, Model model,
+    public String naruci(HttpSession sesija, @RequestParam String adresa, @RequestParam LocalDateTime datum, RedirectAttributes redirectAttributes,
                          @AuthenticationPrincipal UserDetails userDetails) {
 
         //Validacija

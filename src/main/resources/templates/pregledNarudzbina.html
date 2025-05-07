@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="@{../static/components/layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>Profil</title>
+
+</head>
+<body>
+
+<main layout:fragment="content">
+
+  <div th:insert="~{fragments/AccountNavBar :: accountNavBar}">
+  </div>
+
+    <div class="row mt-5">
+      <div class="col-md-12 px-4 py-5 bg-white border border-secondary">
+        <h1 class="text-center mb-4">Vaše Narudžbine</h1>
+
+        <!--Ispis u slucaju da je lista narudzbine prazna-->
+        <div th:if="${#lists.isEmpty(narudzbine)}" class="alert alert-info text-center">
+          Nemate narudžbine.
+        </div>
+
+        <!--Ispis tabele u slucaju da lista narudzbine nije prazna-->
+        <div th:if="${not #lists.isEmpty(narudzbine)}" class="table-responsive">
+          <table class="table table-hover">
+            <thead class="table-primary">
+            <tr>
+              <th>ID</th>
+              <th>Datum</th>
+              <th>Adresa</th>
+              <th>Cena</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="narudzbina : ${narudzbine}">
+              <td th:text="${narudzbina.getId()}">123</td>
+              <td th:text="${#temporals.format(narudzbina.getDatum(), 'dd.MM.yyyy HH:mm')}"></td>
+              <td th:text="${narudzbina.getAdresa()}">Adresa</td>
+              <td th:text="${#numbers.formatCurrency(narudzbina.getCena())}"></td>
+              <td>
+                <button type="button"
+                        class="btn btn-secondary btn-sm"
+                        data-bs-toggle="modal"
+                        th:attr="data-bs-target='#detaljiModal' + ${narudzbina.getId()}">
+                  Detalji
+                </button>
+
+                <form th:action="@{/korisnik/otkaziNarudzbinu/{id}(id=${narudzbina.getId()})}"
+                      method="post"
+                      class="d-inline">
+                  <button type="submit"
+                          class="btn btn-primary btn-sm"
+                          onclick="return confirm('Da li ste sigurni da želite da otkažete narudžbinu?')">
+                    Otkaži
+                  </button>
+                </form>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!--Modal za isppis detalja o narudzbini-->
+        <div th:each="narudzbina : ${narudzbine}">
+          <div class="modal fade"
+               th:id="'detaljiModal' + ${narudzbina.getId()}"
+               tabindex="-1"
+               aria-labelledby="detaljiModalLabel"
+               aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title"
+                      th:id="'detaljiModalLabel' + ${narudzbina.getId()}">
+                    Detalji Narudžbine <span th:text="${narudzbina.getId()}"></span>
+                  </h5>
+                  <button type="button"
+                          class="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th>Stavka</th>
+                        <th>Količina</th>
+                        <th>Cena</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr th:each="stavka : ${narudzbina.getStavke()}">
+                        <td th:text="${stavka.getArtikal().getNaziv()}">Naziv</td>
+                        <td th:text="${stavka.getKolicina()}">1</td>
+                        <td th:text="${#numbers.formatCurrency(stavka.getArtikal().getCena() * stavka.getKolicina())}"></td>
+                      </tr>
+                      </tbody>
+                      <tfoot>
+                      <tr>
+                        <td colspan="2" class="text-end"><strong>Ukupno:</strong></td>
+                        <td th:text="${#numbers.formatCurrency(narudzbina.getCena())}"></td>
+                      </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Zatvori</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</main>
+
+</body>
+</html>

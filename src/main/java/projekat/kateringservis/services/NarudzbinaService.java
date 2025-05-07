@@ -57,4 +57,8 @@ public class NarudzbinaService {
         return narudzbina;
     }
 
+    public List<Narudzbina> getByKorisnik(Korisnik korisnik) {
+        return narudzbinaRepository.findByKorisnik(korisnik);
+    }
+
 }
