@@ -21,7 +21,7 @@ public class Narudzbina {
     private double cena;
     private String adresa;
     private LocalDateTime datum;
-    private boolean jeOtkazana;
+    private boolean otkazana;
 
     //Relacije tabele
     @ManyToOne

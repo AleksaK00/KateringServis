@@ -17,47 +17,61 @@
         <h1 class="text-center mb-4">Vaše Narudžbine</h1>
 
         <!--Ispis u slucaju da je lista narudzbine prazna-->
-        <div th:if="${#lists.isEmpty(narudzbine)}" class="alert alert-info text-center">
-          Nemate narudžbine.
+        <div th:if="${#lists.isEmpty(narudzbine)}">
+          <div class="text-white bg-primary fs-3 text-center py-2">
+            Nemate narudžbine.
+          </div>
+          <div class="row justify-content-center mt-3">
+            <div class="col-md-3">
+              <a th:href="@{/meni/proizvodi}" class="btn btn-primary w-100">Pogledajte meni</a>
+            </div>
+          </div>
         </div>
 
         <!--Ispis tabele u slucaju da lista narudzbine nije prazna-->
         <div th:if="${not #lists.isEmpty(narudzbine)}" class="table-responsive">
           <table class="table table-hover">
             <thead class="table-primary">
-            <tr>
-              <th>ID</th>
-              <th>Datum</th>
-              <th>Adresa</th>
-              <th>Cena</th>
-              <th></th>
-            </tr>
+              <tr>
+                <th>ID</th>
+                <th>Datum</th>
+                <th>Adresa</th>
+                <th>Cena</th>
+                <th></th>
+              </tr>
             </thead>
             <tbody>
-            <tr th:each="narudzbina : ${narudzbine}">
-              <td th:text="${narudzbina.getId()}">123</td>
-              <td th:text="${#temporals.format(narudzbina.getDatum(), 'dd.MM.yyyy HH:mm')}"></td>
-              <td th:text="${narudzbina.getAdresa()}">Adresa</td>
-              <td th:text="${#numbers.formatCurrency(narudzbina.getCena())}"></td>
-              <td>
-                <button type="button"
-                        class="btn btn-secondary btn-sm"
-                        data-bs-toggle="modal"
-                        th:attr="data-bs-target='#detaljiModal' + ${narudzbina.getId()}">
-                  Detalji
-                </button>
-
-                <form th:action="@{/korisnik/otkaziNarudzbinu/{id}(id=${narudzbina.getId()})}"
-                      method="post"
-                      class="d-inline">
-                  <button type="submit"
-                          class="btn btn-primary btn-sm"
-                          onclick="return confirm('Da li ste sigurni da želite da otkažete narudžbinu?')">
-                    Otkaži
+              <tr th:each="narudzbina : ${narudzbine}">
+                <td th:text="${narudzbina.getId()}"></td>
+                <td th:text="${#temporals.format(narudzbina.getDatum(), 'dd.MM.yyyy HH:mm')}"></td>
+                <td th:text="${narudzbina.getAdresa()}"></td>
+                <td th:text="${#numbers.formatCurrency(narudzbina.getCena())}"></td>
+                <td>
+                  <button type="button"
+                          class="btn btn-secondary btn-sm"
+                          data-bs-toggle="modal"
+                          th:attr="data-bs-target='#detaljiModal' + ${narudzbina.getId()}">
+                    Detalji
                   </button>
-                </form>
-              </td>
-            </tr>
+
+                  <!--Obavestenja da li je narudzbina vec ispunjena ili otkazana-->
+                  <button class="btn btn-danger btn-sm w-25" th:if="${narudzbina.isOtkazana()}">Otkazana</button>
+                  <button class="btn btn-success btn-sm w-25"
+                          th:if="${narudzbina.getDatum().toLocalDate.compareTo(#temporals.createToday()) <= 0 && !narudzbina.isOtkazana()}">Ispunjena
+                  </button>
+
+                  <form th:action="@{/korisnik/otkaziNarudzbinu/{id}(id=${narudzbina.getId()})}"
+                        method="post"
+                        class="d-inline">
+                    <button type="submit"
+                            th:if="${!narudzbina.isOtkazana() && narudzbina.getDatum().toLocalDate.compareTo(#temporals.createToday()) > 0}"
+                            class="btn btn-primary btn-sm w-25"
+                            onclick="return confirm('Da li ste sigurni da želite da otkažete narudžbinu?')">
+                      Otkaži
+                    </button>
+                  </form>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -74,7 +88,7 @@
                 <div class="modal-header">
                   <h5 class="modal-title"
                       th:id="'detaljiModalLabel' + ${narudzbina.getId()}">
-                    Detalji Narudžbine <span th:text="${narudzbina.getId()}"></span>
+                    Detalji Narudžbine #<span th:text="${narudzbina.getId()}"></span>
                   </h5>
                   <button type="button"
                           class="btn-close"

@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="@{../static/components/layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>Profil</title>
+
+</head>
+<body>
+
+<main layout:fragment="content">
+
+  <div th:insert="~{fragments/AccountNavBar :: accountNavBar}">
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12 px-4 py-5 bg-white border border-secondary">
+      <h1 class="text-center mb-4">Vaše Narudžbine</h1>
+
+      <!--Ispis u slucaju da je lista proslava prazna-->
+      <div th:if="${#lists.isEmpty(proslave)}">
+        <div class="text-white bg-primary fs-3 text-center py-2">
+          Nemate zakazanih proslava.
+        </div>
+        <div class="row justify-content-center mt-3">
+          <div class="col-md-3">
+            <a th:href="@{/proslave}" class="btn btn-primary w-100">Zakažite proslavu</a>
+          </div>
+        </div>
+      </div>
+
+      <!--Ispis tabele u slucaju da lista proslava nije prazna-->
+      <div th:if="${not #lists.isEmpty(proslave)}" class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-primary">
+          <tr>
+            <th>ID</th>
+            <th>Datum</th>
+            <th>Adresa</th>
+            <th>Broj osoba</th>
+            <th>Cena</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="proslava : ${proslave}">
+            <td th:text="${proslava.getId()}"></td>
+            <td th:text="${#temporals.format(proslava.getDatum(), 'dd.MM.yyyy HH:mm')}"></td>
+            <td th:text="${proslava.getAdresa()}"></td>
+            <td th:text="${proslava.getBrGostiju()}"></td>
+            <td th:text="${#numbers.formatCurrency(proslava.getCena())}"></td>
+            <td>
+              <a class="btn btn-secondary btn-sm" th:href="@{/korisnik/proslava/{id}(id=${proslava.getId()})}">Detalji</a>
+
+              <!--Obavestenja da li je proslava vec odrzana ili otkazana-->
+              <button class="btn btn-danger btn-sm w-25" th:if="${proslava.isOtkazana()}">Otkazana</button>
+              <button class="btn btn-success btn-sm w-25"
+                      th:if="${proslava.getDatum().toLocalDate.compareTo(#temporals.createToday()) <= 0 && !proslava.isOtkazana()}">Ispunjena
+              </button>
+
+              <form th:action="@{/korisnik/otkaziProslavu/{id}(id=${proslava.getId()})}"
+                    method="post"
+                    class="d-inline">
+                <button type="submit"
+                        th:if="${!proslava.isOtkazana() && proslava.getDatum().toLocalDate.compareTo(#temporals.createToday()) > 0}"
+                        class="btn btn-primary btn-sm w-25"
+                        onclick="return confirm('Da li ste sigurni da želite da otkažete narudžbinu?')">
+                  Otkaži
+                </button>
+              </form>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

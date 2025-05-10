@@ -11,6 +11,7 @@ import projekat.kateringservis.repositories.StavkaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NarudzbinaService {
@@ -59,6 +60,21 @@ public class NarudzbinaService {
 
     public List<Narudzbina> getByKorisnik(Korisnik korisnik) {
         return narudzbinaRepository.findByKorisnik(korisnik);
+    }
+
+    //Metoda za otkazivanje narudzbine, vraca true pri uspehu
+    public boolean cancelOrder(int id) {
+
+        Optional<Narudzbina> narudzbina = narudzbinaRepository.findById(id);
+
+        if (narudzbina.isEmpty()) {
+            return false;
+        }
+        else {
+            narudzbina.get().setOtkazana(true);
+            narudzbinaRepository.save(narudzbina.get());
+            return true;
+        }
     }
 
 }

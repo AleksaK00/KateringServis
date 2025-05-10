@@ -1,16 +1,15 @@
 package projekat.kateringservis.controllers;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import projekat.kateringservis.helperClasses.MessageSender;
 import projekat.kateringservis.models.Korisnik;
 import projekat.kateringservis.models.Narudzbina;
 import projekat.kateringservis.models.Stavka;
@@ -28,20 +27,18 @@ public class OrderController {
 
     private final NarudzbinaService narudzbinaService;
     ArtikalService artikalService;
-    LocaleResolver localeResolver;
     KorisnikService korisnikService;
 
     @Autowired
-    public OrderController(ArtikalService artikalService, LocaleResolver localeResolver, KorisnikService korisnikService, NarudzbinaService narudzbinaService) {
+    public OrderController(ArtikalService artikalService, KorisnikService korisnikService, NarudzbinaService narudzbinaService) {
         this.artikalService = artikalService;
         this.korisnikService = korisnikService;
-        this.localeResolver = localeResolver;
         this.narudzbinaService = narudzbinaService;
     }
 
     //Metoda koja vraca pogled sa formom za unos adrese i datuma dostave, default ispis je adresa korisnickog naloga
     @GetMapping("/adresa")
-    public String unesiAdresu(Model model, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request, HttpServletResponse response) {
+    public String unesiAdresu(Model model, @AuthenticationPrincipal UserDetails userDetails) {
 
         //Hvatanje ulogovanog korisnika i dodavanja u adrese u model
         Optional<Korisnik> korisnik = korisnikService.getByKorisnickoime(userDetails.getUsername());
@@ -55,7 +52,8 @@ public class OrderController {
         //dodavanje sutrasnjeg dana u model zarad minimalnog unosa datuma i lokala zarad ispisa datuma
         LocalDateTime sutra = LocalDateTime.now().plusDays(1);
         model.addAttribute("sutra", sutra);
-        localeResolver.setLocale(request, response, new Locale("sr", "RS", "Latn"));
+        Locale serbianLatinLocale = new Locale.Builder().setLanguage("sr").setRegion("RS").setScript("Latn").build();
+        LocaleContextHolder.setLocale(serbianLatinLocale);
 
         return "addressInput";
     }
@@ -89,26 +87,20 @@ public class OrderController {
         @SuppressWarnings("unchecked")
         List<Stavka> korpa = (List<Stavka>)sesija.getAttribute("korpa");
         if (korpa == null) {
-            redirectAttributes.addFlashAttribute("poruka", "Vaša korpa je prazna!");
-            redirectAttributes.addFlashAttribute("tekstDugme", "Pogledajte meni");
-            redirectAttributes.addFlashAttribute("linkDugme", "/meni/proizvodi");
+            MessageSender.redirektPoruka(redirectAttributes, "Vaša korpa je prazna!", "Pogledajte meni", "/meni/proizvodi");
             return "redirect:/obavestenje";
         }
 
         //Dodavanje narudzbine u bazi i brisanje sesije
         Narudzbina narudzbina = narudzbinaService.kreirajNarudzbinu(korpa, adresa, datum, korisnik.get());
         if (narudzbina == null) {
-            redirectAttributes.addFlashAttribute("poruka", "Greška u kreiranju narudžbine");
-            redirectAttributes.addFlashAttribute("tekstDugme", "Nazad na početnu");
-            redirectAttributes.addFlashAttribute("linkDugme", "/");
+            MessageSender.redirektPoruka(redirectAttributes, "Greška u kreiranju narudžbine", "Nazad na početnu", "/");
             return "redirect:/obavestenje";
         }
         sesija.removeAttribute("korpa");
 
         //Ispis poruke o uspehu
-        redirectAttributes.addFlashAttribute("poruka", "Uspešno ste kreirali narudžbinu!");
-        redirectAttributes.addFlashAttribute("tekstDugme", "pogledajte vaše narudžbine");
-        redirectAttributes.addFlashAttribute("linkDugme", "/"); //Promeni kasnije da vodi ka stranici za pregled narudžbina
+        MessageSender.redirektPoruka(redirectAttributes, "Uspešno ste kreirali narudžbinu!", "pogledajte vaše narudžbine", "/korisnik/narudzbine");
         return "redirect:/obavestenje";
     }
 }

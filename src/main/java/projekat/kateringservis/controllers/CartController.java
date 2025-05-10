@@ -1,14 +1,12 @@
 package projekat.kateringservis.controllers;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.LocaleResolver;
 import projekat.kateringservis.models.Artikal;
 import projekat.kateringservis.models.Stavka;
 import projekat.kateringservis.services.ArtikalService;
@@ -20,12 +18,10 @@ import java.util.*;
 public class CartController {
 
     ArtikalService artikalService;
-    LocaleResolver localeResolver;
 
     @Autowired
-    public CartController(ArtikalService artikalService, LocaleResolver localeResolver) {
+    public CartController(ArtikalService artikalService) {
         this.artikalService = artikalService;
-        this.localeResolver = localeResolver;
     }
 
     //Metoda koja dodaje artikal u korpu
@@ -66,7 +62,7 @@ public class CartController {
 
     //Metoda koja vraca pogled sa artiklima u korpi i opcijom za narucivanje
     @GetMapping
-    public String prikaziKorpu(HttpSession sesija, Model model, HttpServletRequest request, HttpServletResponse response) {
+    public String prikaziKorpu(HttpSession sesija, Model model) {
 
         //Dodavanje korpe iz sesije u model
         @SuppressWarnings("unchecked")
@@ -82,8 +78,9 @@ public class CartController {
         }
         model.addAttribute("ukupnaCena", ukupnaCena);
 
-        //Postavljanje lokala na srpski zarad formatiranja valute
-        localeResolver.setLocale(request, response, new Locale("sr", "RS", "Latn"));
+        //Postavljanje lokala na srpski za formatiranje valute
+        Locale serbianLatinLocale = new Locale.Builder().setLanguage("sr").setRegion("RS").setScript("Latn").build();
+        LocaleContextHolder.setLocale(serbianLatinLocale);
 
         return "checkout";
     }

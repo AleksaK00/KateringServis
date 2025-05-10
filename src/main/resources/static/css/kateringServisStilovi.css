@@ -87,9 +87,17 @@
     border-color: red !important;
 }
 
-thead.table-primary{
+.table-primary{
     color: white !important;
+    --bs-table-color: white !important;
+    --bs-table-bg: red !important;
+    --bs-table-border-color: red !important;
+}
+
+.alert-primary {
     background-color: red !important;
+    color: white !important;
+    border-color: red !important;
 }
 
 /*Stilovi sa preuzete log in forme ttps://mdbootstrap.com/docs/standard/extended/login/*/

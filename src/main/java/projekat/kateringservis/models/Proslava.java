@@ -24,6 +24,7 @@ public class Proslava {
     private int brGostiju;
     private String napomena;
     private LocalDateTime datum;
+    private boolean otkazana;
 
     //Relacije tabele
     @ManyToOne

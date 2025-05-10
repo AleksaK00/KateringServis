@@ -1,8 +1,7 @@
 package projekat.kateringservis.controllers;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -11,8 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import projekat.kateringservis.helperClasses.MessageSender;
 import projekat.kateringservis.models.Korisnik;
 import projekat.kateringservis.services.ArtikalService;
 import projekat.kateringservis.services.KorisnikService;
@@ -27,13 +26,11 @@ import java.util.Optional;
 public class EventBookingController {
 
     private final ArtikalService artikalService;
-    private final LocaleResolver localeResolver;
     private final KorisnikService korisnikService;
     private final ProslavaService proslavaService;
 
     @Autowired
-    public EventBookingController(ArtikalService artikalService, LocaleResolver localeResolver, KorisnikService korisnikService, ProslavaService proslavaService) {
-        this.localeResolver = localeResolver;
+    public EventBookingController(ArtikalService artikalService, KorisnikService korisnikService, ProslavaService proslavaService) {
         this.artikalService = artikalService;
         this.korisnikService = korisnikService;
         this.proslavaService = proslavaService;
@@ -41,10 +38,12 @@ public class EventBookingController {
 
     //Vraca pogled za zakazivanje proslava, i hvata trenutnu cenu po osobi
     @GetMapping
-    public String proslave(Model model, HttpServletRequest request, HttpServletResponse response) {
+    public String proslave(Model model) {
 
+        //Hvatanje cene i postaljanje lokala
         model.addAttribute("cena", artikalService.getPriceByPerson());
-        localeResolver.setLocale(request, response, new Locale("sr", "RS", "Latn"));
+        Locale serbianLatinLocale = new Locale.Builder().setLanguage("sr").setRegion("RS").setScript("Latn").build();
+        LocaleContextHolder.setLocale(serbianLatinLocale);
 
         return "proslave";
     }
@@ -81,9 +80,8 @@ public class EventBookingController {
         proslavaService.novaProslava(korisnik.get(), adresa, napomena, brOsoba, ukupnaCena, datum);
 
         //Ispis poruke o uspehu
-        redirectAttributes.addFlashAttribute("poruka", "Uspešno ste rezervisali proslavu! Razgovarajte sa menadžerom za detalje o proslavi.");
-        redirectAttributes.addFlashAttribute("tekstDugme", "pogledajte vaše zakazane proslave");
-        redirectAttributes.addFlashAttribute("linkDugme", "/"); //Promeni kasnije da vodi ka stranici za pregled narudžbina
+        MessageSender.redirektPoruka(redirectAttributes, "Uspešno ste rezervisali proslavu! Razgovarajte sa menadžerom za detalje o proslavi.",
+                "pogledajte vaše zakazane proslave", "/korisnik/proslave");
         return "redirect:/obavestenje";
     }
 }
