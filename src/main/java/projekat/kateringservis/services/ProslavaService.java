@@ -45,4 +45,7 @@ public class ProslavaService {
             return true;
         }
     }
+
+    //Metoda za hvatanje proslave po id-u
+    public Optional<Proslava> getById(int id) { return proslavaRepository.findById(id); }
 }
