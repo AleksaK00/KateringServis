@@ -25,6 +25,8 @@ public class Proslava {
     private String napomena;
     private LocalDateTime datum;
     private boolean otkazana;
+    private boolean neprocitanaPorukaKorisnik;
+    private boolean neprocitanaPorukaMenadzer;
 
     //Relacije tabele
     @ManyToOne

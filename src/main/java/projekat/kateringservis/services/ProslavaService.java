@@ -8,6 +8,7 @@ import projekat.kateringservis.repositories.ProslavaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -46,6 +47,33 @@ public class ProslavaService {
         }
     }
 
+    //Metoda koja azurira odgovarajuce polje neprocitanaPoruka
+    public void skiniNeprocitanuPoruku(Proslava proslava, Korisnik korisnik) {
+
+        if (Objects.equals(korisnik.getUloga(), "KORISNIK")) {
+            proslava.setNeprocitanaPorukaKorisnik(false);
+        }
+        else {
+            proslava.setNeprocitanaPorukaMenadzer(false);
+        }
+
+        try {
+            proslavaRepository.save(proslava);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     //Metoda za hvatanje proslave po id-u
     public Optional<Proslava> getById(int id) { return proslavaRepository.findById(id); }
+
+    //Vraca sve proslave zakazane za ovaj mesec
+    public List<Proslava> getAllThisMonth() {
+
+        LocalDateTime danasnjiDatum = LocalDateTime.now();
+        LocalDateTime pocetakMeseca = LocalDateTime.of(danasnjiDatum.getYear(), danasnjiDatum.getMonth(), 1, 0, 0);
+        LocalDateTime krajMeseca = LocalDateTime.of(danasnjiDatum.getYear(), danasnjiDatum.getMonth(), danasnjiDatum.getMonth().maxLength(), 23, 59);
+
+        return proslavaRepository.findByDatumBetween(pocetakMeseca, krajMeseca);
+    }
 }

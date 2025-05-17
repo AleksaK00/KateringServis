@@ -20,8 +20,6 @@ public class Poruka {
     @Lob
     private String sadrzaj;
     private LocalDateTime vreme;
-    private boolean procitanaKorisnik;
-    private boolean procitanaMenadzer;
 
     //Relacije tabele
     @ManyToOne

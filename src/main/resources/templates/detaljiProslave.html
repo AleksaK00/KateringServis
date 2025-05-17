@@ -44,7 +44,7 @@
   </div>
 
   <!--Forma za slanje poruke-->
-  <div>
+  <div class="mb-3">
 
     <h2 class="text-center mt-4 text-body-secondary">Četujte sa menadžerom</h2>
 
@@ -67,7 +67,7 @@
 
     <!--Kartica za jednu poruku-->
     <div class="row" th:each="poruka : ${poruke}">
-      <div th:class="${poruka.getImePosaljioca() == korisnik.getKorisnickoIme()} ? 'card mt-3 col-md-9 border-0' : 'card mt-3 col-md-9 border-0 ms-auto'">
+      <div th:class="${poruka.getImePosaljioca() == korisnik.getKorisnickoIme()} ? 'card mb-3 col-md-9 border-0' : 'card mb-3 col-md-9 border-0 ms-auto'">
 
         <div class="card-header bg-primary text-white">
           <div class="row">
@@ -80,14 +80,12 @@
           </div>
         </div>
 
-        <div class="card-body">
+        <div class="card-body border border-secondary">
           <p class="card-text" th:text="${poruka.getSadrzaj()}"></p>
         </div>
 
       </div>
-
     </div>
-
   </div>
 
 </main>

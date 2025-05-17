@@ -6,6 +6,7 @@ import projekat.kateringservis.models.Korisnik;
 import projekat.kateringservis.models.Poruka;
 import projekat.kateringservis.models.Proslava;
 import projekat.kateringservis.repositories.PorukaRepository;
+import projekat.kateringservis.repositories.ProslavaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,10 +16,12 @@ import java.util.Objects;
 public class PorukaService {
 
     private final PorukaRepository porukaRepository;
+    private final ProslavaRepository proslavaRepository;
 
     @Autowired
-    public PorukaService(PorukaRepository porukaRepository) {
+    public PorukaService(PorukaRepository porukaRepository, ProslavaRepository proslavaRepository) {
         this.porukaRepository = porukaRepository;
+        this.proslavaRepository = proslavaRepository;
     }
 
     //Metoda za dodavanje nove poruke u bazu
@@ -27,13 +30,14 @@ public class PorukaService {
         Poruka novaPoruka = new Poruka(proslava, korisnik.getKorisnickoIme(), tekstPoruke, LocalDateTime.now());
 
         if (Objects.equals(korisnik.getUloga(), "KORISNIK")) {
-            novaPoruka.setProcitanaKorisnik(true);
+            proslava.setNeprocitanaPorukaMenadzer(true);
         }
         else {
-            novaPoruka.setProcitanaMenadzer(true);
+            proslava.setNeprocitanaPorukaKorisnik(true);
         }
 
         try {
+            proslavaRepository.save(proslava);
             porukaRepository.save(novaPoruka);
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="@{../static/components/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Profil</title>
+
+</head>
+<body>
+
+<main layout:fragment="content">
+
+    <div th:insert="~{fragments/ManagerNavBar :: managerNavBar}">
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-12 px-4 py-5 bg-white border border-secondary">
+
+            <h1 class="text-center text-body-secondary">Panel</h1>
+
+            <!--Ispis svih nekih primera biznis informacija-->
+            <div class="container-fluid p-1 mt-5">
+                <div class="row g-3">
+
+                    <div class="col-md-8">
+                        <div class="p-2 display-6 border border-secondary h-100">
+                            Narudžbina za dostavu ovog meseca:
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-2 display-6 text-center border border-secondary h-100 align-content-center">
+                            <span class="text-body-secondary align-self-end" th:text="${brojNarudzbina}"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="p-2 display-6 border border-secondary h-100">
+                            Proslava zakazanih ovog meseca:
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-2 display-6 text-center border border-secondary h-100 align-content-center">
+                            <span class="text-body-secondary align-self-end" th:text="${brojProslava}"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="p-2 display-6 border border-secondary h-100">
+                            Očekivani prihod ovog meseca:
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-2 display-6 text-center border border-secondary h-100 align-content-center">
+                            <span class="text-body-secondary align-self-end" th:text="${#numbers.formatCurrency(prihod)}"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+</body>
+</html>

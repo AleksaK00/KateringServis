@@ -13,6 +13,7 @@ import projekat.kateringservis.helperClasses.MessageSender;
 import projekat.kateringservis.helperClasses.PrijavljeniKorisnikController;
 import projekat.kateringservis.models.Korisnik;
 import projekat.kateringservis.models.Narudzbina;
+import projekat.kateringservis.models.Poruka;
 import projekat.kateringservis.models.Proslava;
 import projekat.kateringservis.services.KorisnikService;
 import projekat.kateringservis.services.NarudzbinaService;
@@ -150,6 +151,9 @@ public class AccountController extends PrijavljeniKorisnikController {
         model.addAttribute("proslava", proslava.get());
         model.addAttribute("korisnik", new KorisnikDTO(korisnik));
         model.addAttribute("poruke", porukaService.getByProslava(proslava.get()));
+
+        //Postavljanje polja neprocitanaPorukaKorisnik na false
+        proslavaService.skiniNeprocitanuPoruku(proslava.get(), korisnik);
 
         return "detaljiProslave";
     }

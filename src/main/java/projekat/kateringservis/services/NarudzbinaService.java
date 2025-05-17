@@ -77,4 +77,17 @@ public class NarudzbinaService {
         }
     }
 
+    //Vraca sve narudzbine
+    public List<Narudzbina> getAll() { return narudzbinaRepository.findAll();}
+
+    //Vraca sve narudzbine zakazane za ovaj mesec
+    public List<Narudzbina> getAllThisMonth() {
+
+        LocalDateTime danasnjiDatum = LocalDateTime.now();
+        LocalDateTime pocetakMeseca = LocalDateTime.of(danasnjiDatum.getYear(), danasnjiDatum.getMonth(), 1, 0, 0);
+        LocalDateTime krajMeseca = LocalDateTime.of(danasnjiDatum.getYear(), danasnjiDatum.getMonth(), danasnjiDatum.getMonth().maxLength(), 23, 59);
+
+        return narudzbinaRepository.findByDatumBetween(pocetakMeseca, krajMeseca);
+    }
+
 }
