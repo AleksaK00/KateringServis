@@ -3,8 +3,9 @@ package projekat.kateringservis.controllers;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import projekat.kateringservis.helperClasses.MessageSender;
 import projekat.kateringservis.helperClasses.PrijavljeniKorisnikController;
 import projekat.kateringservis.models.Narudzbina;
 import projekat.kateringservis.models.Proslava;
@@ -53,5 +54,99 @@ public class ManagerController extends PrijavljeniKorisnikController {
         model.addAttribute("prihod", prihod);
 
         return "menadzerPanel";
+    }
+
+    //Metoda za prikaz pogleda sa svim narudzbinama
+    @GetMapping("/narudzbine")
+    public String prikaziNarudzbine(Model model) {
+
+        //Hvatanje svih narudzbina i stavljanje u model, postavljanje lokala
+        List<Narudzbina> narudzbine = narudzbinaService.getAll();
+        model.addAttribute("narudzbine", narudzbine);
+        Locale serbianLatinLocale = new Locale.Builder().setLanguage("sr").setRegion("RS").setScript("Latn").build();
+        LocaleContextHolder.setLocale(serbianLatinLocale);
+
+        return "menadzerNarudzbine";
+    }
+
+    //Metoda za otkazivanje narudzbine od strane menadzera
+    @PostMapping("/otkaziNarudzbinu/{id}")
+    public String otkaziNarudzbinu(@PathVariable int id, RedirectAttributes redirectAttributes) {
+
+        //Otkazivanje narudzbine i provera uspeha
+        boolean uspeh = narudzbinaService.cancelOrder(id);
+        if (!uspeh) {
+            MessageSender.redirektPoruka(redirectAttributes, "Greška pri otkazivanju narudbine!", "Nazad", "/menadzer/narudzbine");
+            return "redirect:/obavestenje";
+        }
+        MessageSender.redirektPoruka(redirectAttributes, "Narudžbina uspešno otkazana!", "Nazad", "/menadzer/narudzbine");
+        return "redirect:/obavestenje";
+    }
+
+    //Metoda za pretragu narudzbina po korisniku ili ID-u
+    @PostMapping("/pretragaNarudzbina")
+    public String pretragaNarudzbina(Model model, @RequestParam String pretraga, @RequestParam String tipPretrage) {
+
+        //Ako je string prazan vraca sve narudzbina(Reset pretrage)
+        if (pretraga.isEmpty()) {
+            return "redirect:/menadzer/narudzbine";
+        }
+
+        //Pretraga po izabranom tipu i stavljanje u model
+        List<Narudzbina> narudzbine = null;
+        if (tipPretrage.equals("korisnickoIme")) {
+            narudzbine = narudzbinaService.getAllByKorisnickoIme(pretraga);
+        }
+        else {
+            narudzbine = narudzbinaService.getAllByKorisnikID(pretraga);
+        }
+        model.addAttribute("narudzbine", narudzbine);
+        return "menadzerNarudzbine";
+    }
+
+    //Metoda za prikaz pogleda sa svim proslavama
+    @GetMapping("/proslave")
+    public String prikaziProslave(Model model) {
+
+        //Hvatanje svih narudzbina i stavljanje u model, postavljanje lokala
+        List<Proslava> proslave = proslavaService.getAll();
+        model.addAttribute("proslave", proslave);
+        Locale serbianLatinLocale = new Locale.Builder().setLanguage("sr").setRegion("RS").setScript("Latn").build();
+        LocaleContextHolder.setLocale(serbianLatinLocale);
+
+        return "menadzerProslave";
+    }
+
+    //Metoda za pretragu proslava po korisniku ili ID-u
+    @PostMapping("/pretragaProslava")
+    public String pretragaProslava(Model model, @RequestParam String pretraga, @RequestParam String tipPretrage) {
+
+        //Ako je string prazan vraca sve proslave(Reset pretrage)
+        if (pretraga.isEmpty()) {
+            return "redirect:/menadzer/proslave";
+        }
+
+        //Pretraga po izabranom tipu i stavljanje u model
+        List<Proslava> proslave = null;
+        if (tipPretrage.equals("korisnickoIme")) {
+            proslave = proslavaService.getAllByKorisnickoIme(pretraga);
+        }
+        else {
+            proslave = proslavaService.getAllByKorisnikID(pretraga);
+        }
+        model.addAttribute("proslave", proslave);
+        return "menadzerProslave";
+    }
+
+    @PostMapping("/otkaziProslavu/{id}")
+    public String otkaziProslavu(@PathVariable int id, RedirectAttributes redirectAttributes) {
+
+        boolean uspeh = proslavaService.cancelOrder(id);
+        if (!uspeh) {
+            MessageSender.redirektPoruka(redirectAttributes, "Greška pri otkazivanju proslave!", "Nazad", "/menadzer/proslave");
+            return "redirect:/obavestenje";
+        }
+        MessageSender.redirektPoruka(redirectAttributes, "Proslava uspešno otkazana!", "Nazad", "/menadzer/proslave");
+        return "redirect:/obavestenje";
     }
 }

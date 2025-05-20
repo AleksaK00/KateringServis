@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<!--Fragment za navigaciju naloga menadzera-->
+<div th:fragment="pretragakorisnika(putanja)">
+        <form method="post" th:action="@{${putanja}}">
+            <div class="row bg-primary mt-3">
+
+                <div class="col-md-4">
+                    <label for="pretraga" class="text-white">Pretraga</label>
+                    <input type="text" id="pretraga" class="form-control mb-2" name="pretraga">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="text-white d-inline-block">Pretraga po:</label>
+                    <div class="mt-2">
+                        <input id="tipPretrageIme" type="radio" name="tipPretrage" value="korisnickoIme" class="form-check-input" th:checked="${true}">
+                        <label for="tipPretrageIme" class="text-white me-2">Korisničkom imenu</label>
+                        <input id="tipPretrageId" type="radio" name="tipPretrage" value="id" class="form-check-input">
+                        <label for="tipPretrageId" class="text-white me-2">Id-u</label>
+                    </div>
+                </div>
+
+                <div class="col-md-5 d-flex align-items-center">
+                    <input type="submit" value="Pretraži" class="btn btn-lg btn-secondary">
+                </div>
+            </div>
+        </form>
+</div>
+
+</body>

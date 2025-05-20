@@ -99,6 +99,10 @@
 {
     width: 35% !important;
 }
+.w-45
+{
+    width: 45% !important;
+}
 
 /*Stilovi sa preuzete log in forme ttps://mdbootstrap.com/docs/standard/extended/login/*/
 .divider:after,
