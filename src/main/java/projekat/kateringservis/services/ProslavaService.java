@@ -2,6 +2,7 @@ package projekat.kateringservis.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import projekat.kateringservis.helperClasses.IzmenaProslaveDTO;
 import projekat.kateringservis.models.Korisnik;
 import projekat.kateringservis.models.Proslava;
 import projekat.kateringservis.repositories.KorisnikRepository;
@@ -107,5 +108,23 @@ public class ProslavaService {
         Optional<Korisnik> korisnik = korisnikRepository.findById(Integer.parseInt(korisnikID));
         //IntelliJ predlozio umesto if/elsa koji sam napisao, cool skracenica koda
         return korisnik.map(proslavaRepository::findByKorisnik).orElse(null);
+    }
+
+    //Metoda za izmenu podataka proslave, vraca false ako proslava ne postoji
+    public boolean updateProslava(IzmenaProslaveDTO izmenjenaProslava, int id) {
+
+        Optional<Proslava> proslava = proslavaRepository.findById(id);
+        if (proslava.isEmpty()) {
+            return false;
+        }
+
+        proslava.get().setAdresa(izmenjenaProslava.getAdresa());
+        proslava.get().setDatum(LocalDateTime.parse(izmenjenaProslava.getDatum()));
+        proslava.get().setCena(izmenjenaProslava.getCenaUnos());
+        proslava.get().setNapomena(izmenjenaProslava.getNapomena());
+        proslava.get().setBrGostiju(izmenjenaProslava.getBrOsoba());
+
+        proslavaRepository.save(proslava.get());
+        return true;
     }
 }

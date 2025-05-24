@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="@{../static/components/layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>Proslava</title>
+
+</head>
+<body>
+
+<main layout:fragment="content">
+
+  <div th:insert="~{fragments/ManagerNavBar :: managerNavBar}"></div>
+
+  <!--Polje sa svim informacijama o proslavi-->
+  <div class="border border-secondary mt-5 px-5">
+
+    <h1 class="text-center text-body-secondary mt-3 display-5">Izmena proslave</h1>
+
+    <form method="post" th:action="@{/menadzer/proslava/{id}/izmeni(id=${proslava.getId()})}" th:object="${izmenaProslaveDTO}">
+
+    <div class="form-group">
+        <label for="adresa" class="form-label mt-4">Adresa</label>
+        <input id="adresa" type="text" th:field="*{adresa}" class="form-control" th:classappend="${#fields.hasErrors('adresa')} ? 'is-invalid'" required>
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('adresa')}" th:errors="*{adresa}"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="datum" class="form-label mt-4">Datum i Vreme</label>
+        <input id="datum" type="datetime-local" th:field="*{datum}" class="form-control" th:classappend="${#fields.hasErrors('datum')} ? 'is-invalid'" required>
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('datum')}" th:errors="*{datum}"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="brOsoba" class="form-label mt-4">Broj osoba</label>
+        <input id="brOsoba" type="number" th:field="*{brOsoba}" class="form-control" 
+               th:classappend="${#fields.hasErrors('brOsoba')} ? 'is-invalid'" min="20" max="200" required th:onchange="IzmeniCenu()">
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('brOsoba')}" th:errors="*{brOsoba}"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="cenaUnos" class="form-label mt-4">Cena. Po cenovniku za dati broj gostiju cena iznosi:
+            <span id="cena" th:data-cena="${cena}" th:text="${#numbers.formatCurrency(proslava.getBrGostiju() * cena)}"></span>
+        </label>
+        <input id="cenaUnos" type="text" th:field="*{cenaUnos}" class="form-control"
+               th:classappend="${#fields.hasErrors('cenaUnos')} ? 'is-invalid'" required>
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('cenaUnos')}" th:errors="*{cenaUnos}"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="napomena" class="form-label mt-4">Napomena, želje i slično</label>
+        <textarea id="napomena" th:field="*{napomena}" class="form-control mb-4"
+                  th:classappend="${#fields.hasErrors('napomena')} ? 'is-invalid'"></textarea>
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('napomena')}" th:errors="*{napomena}"></div>
+    </div>
+
+    <!-- Globane greske ako postoje -->
+    <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}">
+        <p th:text="${error}"></p>
+    </div>
+
+    <div class="row justify-content-center mb-4">
+        <input type="submit" value="Zakaži" class="btn btn-primary w-50">
+    </div>
+</form>
+
+  </div>
+
+</main>
+
+<section layout:fragment="skripte">
+  <script th:src="@{/js/proslaveCena.js}"></script>
+</section>
+
+</body>
+</html>

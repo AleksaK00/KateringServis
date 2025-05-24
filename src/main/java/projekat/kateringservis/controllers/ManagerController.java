@@ -1,30 +1,42 @@
 package projekat.kateringservis.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import projekat.kateringservis.helperClasses.IzmenaProslaveDTO;
+import projekat.kateringservis.helperClasses.KorisnikDTO;
 import projekat.kateringservis.helperClasses.MessageSender;
 import projekat.kateringservis.helperClasses.PrijavljeniKorisnikController;
+import projekat.kateringservis.models.Korisnik;
 import projekat.kateringservis.models.Narudzbina;
 import projekat.kateringservis.models.Proslava;
-import projekat.kateringservis.services.KorisnikService;
-import projekat.kateringservis.services.NarudzbinaService;
-import projekat.kateringservis.services.ProslavaService;
+import projekat.kateringservis.services.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 @RequestMapping("/menadzer")
 @Controller
 public class ManagerController extends PrijavljeniKorisnikController {
 
     private final NarudzbinaService narudzbinaService;
+    private final PorukaService porukaService;
+    private final ArtikalService artikalService;
 
-    protected ManagerController(KorisnikService korisnikService, ProslavaService proslavaService, NarudzbinaService narudzbinaService) {
+    protected ManagerController(KorisnikService korisnikService, ProslavaService proslavaService, NarudzbinaService narudzbinaService,
+                                PorukaService porukaService, ArtikalService artikalService) {
         super(korisnikService, proslavaService);
         this.narudzbinaService = narudzbinaService;
+        this.porukaService = porukaService;
+        this.artikalService = artikalService;
     }
 
     //Metoda koja prikazuje menadzer panel sa nekim osnovnim biznis informacijama
@@ -138,6 +150,7 @@ public class ManagerController extends PrijavljeniKorisnikController {
         return "menadzerProslave";
     }
 
+    //Metoda za otkazivanje proslave od strane menadzera
     @PostMapping("/otkaziProslavu/{id}")
     public String otkaziProslavu(@PathVariable int id, RedirectAttributes redirectAttributes) {
 
@@ -148,5 +161,92 @@ public class ManagerController extends PrijavljeniKorisnikController {
         }
         MessageSender.redirektPoruka(redirectAttributes, "Proslava uspešno otkazana!", "Nazad", "/menadzer/proslave");
         return "redirect:/obavestenje";
+    }
+
+    //Metoda za prikaz detalja proslave
+    @GetMapping("/proslava/{id}")
+    public String prikaziProslavu(@PathVariable int id, Model model, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
+
+        Korisnik menadzer = trenutnoPrijavljen(userDetails);
+
+        //Hvatanje proslave i dodavanje u model
+        Optional<Proslava> proslava = proslavaService.getById(id);
+        if (proslava.isPresent()) {
+            MessageSender.redirektPoruka(redirectAttributes, "Ne postojeća proslava!", "Nazad", "korisnik/proslave");
+        }
+        model.addAttribute("proslava", proslava.get());
+        model.addAttribute("korisnik", proslava.get().getKorisnik());
+        model.addAttribute("poruke", porukaService.getByProslava(proslava.get()));
+
+        //Postavljanje polja neprocitanaPorukaKorisnik na false
+        proslavaService.skiniNeprocitanuPoruku(proslava.get(), menadzer);
+
+        return "menadzerDetaljiProslave";
+    }
+
+    //Metoda za slanje poruke od strane menadzera
+    @PostMapping("/proslava/{id}/posaljiPoruku")
+    public String posaljiPoruku(@PathVariable int id, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes, @RequestParam String porukaTekst) {
+
+        Korisnik menadzer = trenutnoPrijavljen(userDetails);
+
+        //Validacija
+        if (porukaTekst.isEmpty()) {
+            MessageSender.redirektPoruka(redirectAttributes, "Ne možete slati praznu poruku", "Nazad", "menadzer/proslave/" + id);
+        }
+        Optional<Proslava> proslava = proslavaService.getById(id);
+        if (proslava.isPresent()) {
+            MessageSender.redirektPoruka(redirectAttributes, "Ne postojeća proslava!", "Nazad", "menadzer/proslave");
+        }
+
+        //Dodavanje u bazu
+        porukaService.kreirajPoruku(proslava.get(), menadzer, porukaTekst.trim());
+        return "redirect:/menadzer/proslava/" + id;
+    }
+
+    //Metoda za prikazivanje forme za izmenu proslave
+    @GetMapping("/proslava/{id}/izmena")
+    public String izmenaProslave(@PathVariable int id, Model model, RedirectAttributes redirectAttributes) {
+
+        //provera da li proslava postoji
+        Optional<Proslava> proslava = proslavaService.getById(id);
+        if (proslava.isPresent()) {
+            MessageSender.redirektPoruka(redirectAttributes, "Ne postojeća proslava!", "Nazad", "menadzer/proslave");
+        }
+
+        //Inicijalizacija DTO objekta sa trenutnim vrednostima proslave
+        IzmenaProslaveDTO izmenaProslaveDTO = new IzmenaProslaveDTO();
+        izmenaProslaveDTO.setAdresa(proslava.get().getAdresa());
+        izmenaProslaveDTO.setDatum(proslava.get().getDatum().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
+        izmenaProslaveDTO.setNapomena(proslava.get().getNapomena());
+        izmenaProslaveDTO.setBrOsoba(proslava.get().getBrGostiju());
+        izmenaProslaveDTO.setCenaUnos(proslava.get().getCena());
+
+        //Hvatanje cene po osobi, postaljanje lokala i dodavanje u model
+        Locale serbianLatinLocale = new Locale.Builder().setLanguage("sr").setRegion("RS").setScript("Latn").build();
+        LocaleContextHolder.setLocale(serbianLatinLocale);
+        model.addAttribute("cena", artikalService.getPriceByPerson());
+        model.addAttribute("izmenaProslaveDTO", izmenaProslaveDTO);
+        model.addAttribute("proslava", proslava.get());
+
+        return "menadzerIzmenaProslave";
+    }
+
+    @PostMapping("/proslava/{id}/izmeni")
+    public String izmeniProslavu(@PathVariable int id, Model model, @Valid @ModelAttribute IzmenaProslaveDTO izmenjenaProslava,
+                                 BindingResult bindingResult) {
+
+        //Validacija
+        if (bindingResult.hasErrors()) {
+            Optional<Proslava> proslava = proslavaService.getById(id);
+            model.addAttribute("proslava", proslava.get());
+            model.addAttribute("cena", artikalService.getPriceByPerson());
+            return "menadzerIzmenaProslave";
+
+        }
+
+
+        proslavaService.updateProslava(izmenjenaProslava, id);
+        return "redirect:/menadzer/proslava/" + id;
     }
 }

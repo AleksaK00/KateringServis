@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="@{../static/components/layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>Proslava</title>
+
+</head>
+<body>
+
+<main layout:fragment="content">
+
+  <div th:insert="~{fragments/ManagerNavBar :: managerNavBar}"></div>
+
+  <!--Polje sa svim informacijama o proslavi-->
+  <div class="border border-secondary mt-5">
+
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-8">
+        <h1 class="text-center text-body-secondary mt-3 display-5">Detalji proslave</h1>
+      </div>
+      <div class="col-md-2">
+        <a class="btn btn-primary mt-4" th:href="@{/menadzer/proslava/{id}/izmena(id=${proslava.getId()})}">Izmeni</a>
+      </div>
+    </div>
+
+    <div class="table-responsive px-3">
+      <table class="table mt-5 display-6">
+        <tr>
+          <td class="text-body-secondary">Identifikacioni broj:</td>
+          <td th:text="${'#' + proslava.getId()}"></td>
+        </tr>
+        <tr>
+          <td class="text-body-secondary">Datum:</td>
+          <td th:text="${#temporals.format(proslava.getDatum(), 'dd.MM.yyyy HH:mm') + 'h'}"></td>
+        </tr>
+        <tr>
+          <td class="text-body-secondary">Adresa:</td>
+          <td th:text="${proslava.getAdresa()}"></td>
+        </tr>
+        <tr>
+          <td class="text-body-secondary">Broj osoba:</td>
+          <td th:text="${proslava.getBrGostiju()}"></td>
+        </tr>
+        <tr>
+          <td class="text-body-secondary">Cena:</td>
+          <td th:text="${#numbers.formatCurrency(proslava.getCena())}"></td>
+        </tr>
+        <tr>
+          <td class="text-body-secondary">Napomena:</td>
+          <td><p th:utext="${proslava.getNapomena()}" style="white-space: pre-line;"></p></td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+
+  <!--Forma za slanje poruke-->
+  <div class="mb-3">
+
+    <h2 class="text-center mt-4 text-body-secondary">Četujte sa menadžerom</h2>
+
+    <form method="post" th:action="@{/menadzer/proslava/{id}/posaljiPoruku(id=${proslava.getId()})}" class="mt-5">
+
+      <label for="porukaTekst" class="form-label fs-4">Poruka</label>
+      <textarea id="porukaTekst" name="porukaTekst" class="form-control" rows="5" placeholder="Unesite poruku"></textarea>
+
+      <div class="row justify-content-end mt-2">
+        <div class="col-md-2">
+          <input type="submit" class="btn btn-primary w-100" value="Pošalji">
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--Ispis poruka-->
+  <div th:if="${not #lists.isEmpty(poruke)}" class="mx-4">
+
+    <!--Kartica za jednu poruku-->
+    <div class="row" th:each="poruka : ${poruke}">
+      <div th:class="${poruka.getImePosaljioca() == korisnik.getKorisnickoIme()} ? 'card mb-3 col-md-9 border-0' : 'card mb-3 col-md-9 border-0 ms-auto'">
+
+        <div class="card-header bg-primary text-white">
+          <div class="row">
+            <div class="col-md-6">
+              <h5 class="card-title" th:text="${poruka.getImePosaljioca()}"></h5>
+            </div>
+            <div class="col-md-6 text-end">
+              <h5 class="card-title" th:text="${#temporals.format(poruka.getVreme(), 'dd.MM.yyyy HH:mm') + 'h'}"></h5>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body border border-secondary">
+          <p class="card-text" th:text="${poruka.getSadrzaj()}"></p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>
