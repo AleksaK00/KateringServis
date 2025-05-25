@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="@{../static/components/layout}">
 <head>
   <meta charset="UTF-8">
-  <title>Pregled proslava</title>
+  <title>Pregled proizvoda</title>
 
 </head>
 <body>
@@ -16,10 +16,16 @@
     <div class="col-md-12 px-4 py-5 bg-white border border-secondary">
       <h1 class="text-center mb-4">Proizvodi</h1>
 
+      <div class="row mb-1">
+        <div class="col-md-3">
+          <a th:href="@{/menadzer/proizvodi/dodaj}" class="btn btn-lg btn-primary">Dodaj novi proizvod</a>
+        </div>
+      </div>
+
       <!--Ispis u slucaju da je lista artikala prazna-->
       <div th:if="${#lists.isEmpty(artikli)}">
         <div class="text-white bg-primary fs-3 text-center py-2">
-          Nema zakazanih proslava.
+          Nema proizvoda
         </div>
       </div>
 
@@ -52,7 +58,7 @@
               <a th:if="${not artikal.isNaProdaji()}" class="btn btn-sm btn-danger w-75" th:href="@{/menadzer/proizvodi/toggleProdaja/{id}(id=${artikal.getId()})}">Van menija</a>
             </td>
             <td>
-              <a class="btn btn-sm btn-primary w-75" th:href="@{/menadzer/prozivodi/{id}/izmeni(id=${artikal.getId()})}">Izmeni</a>
+              <a class="btn btn-sm btn-primary w-75" th:href="@{/menadzer/proizvodi/{id}/izmeni(id=${artikal.getId()})}">Izmeni</a>
             </td>
           </tr>
           </tbody>

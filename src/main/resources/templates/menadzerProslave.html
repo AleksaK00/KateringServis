@@ -17,7 +17,26 @@
 
     <div class="row">
         <div class="col-md-12 px-4 py-5 bg-white border border-secondary">
-            <h1 class="text-center mb-4">Proslave</h1>
+
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <h1 class="text-center mb-4">Proslave</h1>
+                </div>
+                <div class="col-md-4">
+                    <form th:action="@{/menadzer/proslava/izmenaCenePoOsobi}" th:method="post">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="cenaPoOsobi">Cena po osobi</label>
+                                <input id="cenaPoOsobi" type="text" class="form-control" name="cenaPoOsobi" th:value="${cenaPoOsobi}"/>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-primary mt-4">Izmeni</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
             <!--Ispis u slucaju da je lista proslava prazna-->
             <div th:if="${#lists.isEmpty(proslave)}">

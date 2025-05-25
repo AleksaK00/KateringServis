@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="@{../static/components/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj artikal</title>
+
+</head>
+<body>
+
+<main layout:fragment="content">
+
+    <div th:insert="~{fragments/ManagerNavBar :: managerNavBar}"></div>
+
+    <!--Forma za dodavanje novog proizvoda-->
+    <section class="mt-5 py-5">
+        <div class="row justify-content-center">
+
+            <div class="col-md-8">
+                <form method="post" th:action="@{/menadzer/proizvodi/dodaj}" th:object="${artikalDTO}" enctype="multipart/form-data">
+                    <div class="d-flex flex-row align-items-center justify-content-center">
+                        <h2 class="mb-0 me-3 text-body-secondary">Dodaj artikal</h2>
+                    </div>
+
+                    <div class="divider d-flex align-items-center my-4"></div>
+
+                    <!-- Input Naziv proizvoda -->
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label class="form-label" for="naziv">Naziv proizvoda</label>
+                        <input type="text" id="naziv" class="form-control form-control-lg" th:field="*{naziv}"
+                               th:classappend="${#fields.hasErrors('naziv')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('naziv')}" th:errors="*{naziv}"></div>
+                    </div>
+
+                    <!-- Input opis proizvoda -->
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label class="form-label" for="opis">Opis proizvoda</label>
+                        <textarea type="text" id="opis" class="form-control form-control-lg" rows="5" th:field="*{opis}"
+                                  th:classappend="${#fields.hasErrors('opis')} ? 'is-invalid'"></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('opis')}" th:errors="*{opis}"></div>
+                    </div>
+
+                    <!-- Input slika proizvoda-->
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label class="form-label" for="slika">Slika</label>
+                        <input type="file" id="slika" class="form-control form-control-lg" th:field="*{slika}"
+                               th:classappend="${#fields.hasErrors('slika')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('slika')}" th:errors="*{slika}"></div>
+                    </div>
+
+                    <!-- Input potvrde cena-->
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label class="form-label" for="cena">Cena</label>
+                        <input type="text" id="cena" class="form-control form-control-lg" th:field="*{cena}"
+                               th:classappend="${#fields.hasErrors('cena')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('cena')}" th:errors="*{cena}"></div>
+                    </div>
+
+                    <!-- Input Tip proizvoda-->
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label class="form-label" for="tip">Tip proizvoda</label>
+                        <select id="tip" class="form-control form-control-lg" th:field="*{tip}"
+                                th:classappend="${#fields.hasErrors('tip')} ? 'is-invalid'">
+                            <option value="SLANO">SLANO</option>
+                            <option value="SLATKO">SLATKO</option>
+                            <option value="SET">SET</option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('tip')}" th:errors="*{tip}"></div>
+                    </div>
+
+                    <div class="row text-lg-start mt-4 pt-2 justify-content-center">
+                        <input type="submit" class="btn btn-primary btn-lg w-50" value="Dodaj">
+                    </div>
+
+                    <!-- Globane greske ako postoje -->
+                    <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+                        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Poruka Greske -->
+    <div class="text-center">
+        <!--/*@thymesVar id="greska" type=""*/-->
+        <h3 class="text-body-secondary" th:if="${greska != null}" th:text="${greska}"></h3>
+    </div>
+
+</main>
+
+</body>
+</html>

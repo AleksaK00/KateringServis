@@ -9,10 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import projekat.kateringservis.helperClasses.IzmenaProslaveDTO;
-import projekat.kateringservis.helperClasses.KorisnikDTO;
-import projekat.kateringservis.helperClasses.MessageSender;
-import projekat.kateringservis.helperClasses.PrijavljeniKorisnikController;
+import projekat.kateringservis.helperClasses.*;
+import projekat.kateringservis.models.Artikal;
 import projekat.kateringservis.models.Korisnik;
 import projekat.kateringservis.models.Narudzbina;
 import projekat.kateringservis.models.Proslava;
@@ -21,6 +19,7 @@ import projekat.kateringservis.services.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequestMapping("/menadzer")
@@ -120,9 +119,10 @@ public class ManagerController extends PrijavljeniKorisnikController {
     @GetMapping("/proslave")
     public String prikaziProslave(Model model) {
 
-        //Hvatanje svih narudzbina i stavljanje u model, postavljanje lokala
+        //Hvatanje svih proslava i stavljanje u model, postavljanje lokala
         List<Proslava> proslave = proslavaService.getAll();
         model.addAttribute("proslave", proslave);
+        model.addAttribute("cenaPoOsobi", artikalService.getPriceByPerson());
         Locale serbianLatinLocale = new Locale.Builder().setLanguage("sr").setRegion("RS").setScript("Latn").build();
         LocaleContextHolder.setLocale(serbianLatinLocale);
 
@@ -243,11 +243,30 @@ public class ManagerController extends PrijavljeniKorisnikController {
             model.addAttribute("proslava", proslava.get());
             model.addAttribute("cena", artikalService.getPriceByPerson());
             return "menadzerIzmenaProslave";
-
         }
 
         proslavaService.updateProslava(izmenjenaProslava, id);
         return "redirect:/menadzer/proslava/" + id;
+    }
+
+    //Obrada post requesta za izmenu cene po osobi proslave
+    @PostMapping("/proslava/izmenaCenePoOsobi")
+    public String izmenaCenePoOsobi(@RequestParam double cenaPoOsobi, RedirectAttributes redirectAttributes) {
+
+        //validacija
+        if (cenaPoOsobi <= 0) {
+            MessageSender.redirektPoruka(redirectAttributes, "Neispravna vrednost cene po osobi!", "Nazad", "menadzer/proslave");
+            return "redirect:/obavestenje";
+        }
+
+        //Promena u bazi
+        boolean uspeh = artikalService.updatePricePerPerson(cenaPoOsobi);
+        if (!uspeh) {
+            MessageSender.redirektPoruka(redirectAttributes, "Ne uspešno menjanje cene po osobi!", "Nazad", "menadzer/proslave");
+            return "redirect:/obavestenje";
+        }
+        MessageSender.redirektPoruka(redirectAttributes, "Uspešno menjanje cene po osobi!", "Nazad", "menadzer/proslave");
+        return "redirect:/obavestenje";
     }
 
     //Obrada get requesta za prikazivanje liste proizvoda za menadzera
@@ -273,5 +292,67 @@ public class ManagerController extends PrijavljeniKorisnikController {
 
         artikalService.toggleNaMeniju(id);
         return "redirect:/menadzer/proizvodi";
+    }
+
+    //Ispisivanje stranice za dodavanje proizvoda
+    @GetMapping("/proizvodi/dodaj")
+    public String prikaziFormuZaDodavanjeProizvoda(Model model) {
+
+        model.addAttribute("artikalDTO", new ArtikalDTO());
+        return "menadzerDodavanjeProizvoda";
+    }
+
+    //Izvrsavanje post requesta za dodavanje proizvoda
+    @PostMapping("/proizvodi/dodaj")
+    public String dodajProizvod(@Valid @ModelAttribute("artikalDTO") ArtikalDTO artikalDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes,
+                                Model model) {
+
+        //validacija
+        if (bindingResult.hasErrors()) {
+            return "menadzerDodavanjeProizvoda";
+        }
+
+        boolean uspeh = artikalService.addArtikal(artikalDTO);
+        if (!uspeh) {
+            MessageSender.redirektPoruka(redirectAttributes, "Neuspešno dodavanje proiyvoda", "Nazad", "menadzer/proizvodi/dodaj");
+            return "redirect:/obavestenje";
+        }
+
+        MessageSender.redirektPoruka(redirectAttributes, "Proizvod je uspešno dodat!", "Nazad", "menadzer/proizvodi");
+        return "redirect:/obavestenje";
+    }
+
+    //Ispisivanje stranice za promenu proizvoda
+    @GetMapping("/proizvodi/{id}/izmeni")
+    public String prikaziFormuZaIzmenuProizvoda(@PathVariable int id, Model model, RedirectAttributes redirectAttributes) {
+
+        Optional<Artikal> artikal = artikalService.getByIdNoDiscount(id);
+        if (artikal.isEmpty()) {
+            MessageSender.redirektPoruka(redirectAttributes, "Ne postojeći proizvod!", "Nazad", "menadzer/proizvodi");
+            return "redirect:/obavestenje";
+        }
+
+        model.addAttribute("artikal", artikal.get());
+        return "menadzerIzmenaProizvoda";
+    }
+
+    //Izvrsavanje izmene proizvoda
+    @PostMapping("/proizvodi/{id}/izmeni")
+    public String izvrsiIzmenuProizvoda(@RequestParam String opis, @RequestParam double cena, @PathVariable int id, RedirectAttributes redirectAttributes) {
+
+        //Validacija
+        if (opis.isEmpty() || cena <= 0) {
+            redirectAttributes.addFlashAttribute("greska", "Neispravne vrednosti!");
+            return "redirect:/menadzer/proizvodi/" + id + "/izmeni";
+        }
+
+        //Izmena artikla u bazi, ispis poruke uspeha/neuspeha
+        String porukaUspeha = artikalService.editArtikal(id, opis, cena);
+        if (!Objects.equals(porukaUspeha, "Uspeh")) {
+            redirectAttributes.addFlashAttribute("greska", porukaUspeha);
+            return "redirect:/menadzer/proizvodi/" + id + "/izmeni";
+        }
+        MessageSender.redirektPoruka(redirectAttributes, "Uspešno izmenjen proizvod!", "Nazad", "menadzer/proizvodi");
+        return "redirect:/obavestenje";
     }
 }

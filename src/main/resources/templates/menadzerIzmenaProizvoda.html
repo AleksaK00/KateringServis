@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="@{../static/components/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj artikal</title>
+
+</head>
+<body>
+
+<main layout:fragment="content">
+
+    <div th:insert="~{fragments/ManagerNavBar :: managerNavBar}"></div>
+
+    <!--Forma za dodavanje novog proizvoda-->
+    <section class="py-5">
+        <div class="row justify-content-center">
+
+            <div class="col-md-8">
+                <form method="post" th:action="@{/menadzer/proizvodi/{id}/izmeni(id=${artikal.getId()})}">
+                    <div class="d-flex flex-row align-items-center justify-content-center">
+                        <h2 class="mb-0 me-3 text-body-secondary">Izmeni artikal</h2>
+                    </div>
+
+                    <div class="divider d-flex align-items-center my-4"></div>
+
+                    <div class="d-flex justify-content-center">
+                        <img th:src="@{'/images/products/' + ${artikal.getId()} + '.jpg'}" class="img-fluid" alt="Slika proizvoda" style="height: 300px;">
+                    </div>
+                    <!-- Ispisi posotjecih detalja prozizvoda -->
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label class="form-label" for="naziv">Naziv proizvoda</label>
+                        <input type="text" id="naziv" class="form-control form-control-lg" disabled th:value="${artikal.getNaziv()}">
+                    </div>
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label class="form-label" for="tip">Kategorija proizvoda</label>
+                        <input type="text" id="tip" class="form-control form-control-lg" disabled th:value="${artikal.getKategorija()}">
+                    </div>
+
+                    <!-- Input opis proizvoda -->
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label class="form-label" for="opis">Opis proizvoda</label>
+                        <textarea type="text" id="opis" class="form-control form-control-lg" name="opis" rows="5" th:text="${artikal.getOpis()}"></textarea>
+                    </div>
+
+                    <!-- Input cena-->
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label class="form-label" for="cena">Cena</label>
+                        <input type="text" id="cena" class="form-control form-control-lg" name="cena" th:value="${artikal.getCena()}">
+                    </div>
+
+                    <div class="row text-lg-start mt-4 pt-2 justify-content-center">
+                        <input type="submit" class="btn btn-primary btn-lg w-50" value="Izmeni">
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Poruka Greske -->
+    <div class="text-center">
+        <!--/*@thymesVar id="greska" type=""*/-->
+        <h3 class="text-body-secondary" th:if="${greska != null}" th:text="${greska}"></h3>
+    </div>
+
+</main>
+
+</body>
+</html>
