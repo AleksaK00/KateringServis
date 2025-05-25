@@ -232,6 +232,7 @@ public class ManagerController extends PrijavljeniKorisnikController {
         return "menadzerIzmenaProslave";
     }
 
+    //Obrada post requesta za izmenu proslave
     @PostMapping("/proslava/{id}/izmeni")
     public String izmeniProslavu(@PathVariable int id, Model model, @Valid @ModelAttribute IzmenaProslaveDTO izmenjenaProslava,
                                  BindingResult bindingResult) {
@@ -245,8 +246,32 @@ public class ManagerController extends PrijavljeniKorisnikController {
 
         }
 
-
         proslavaService.updateProslava(izmenjenaProslava, id);
         return "redirect:/menadzer/proslava/" + id;
+    }
+
+    //Obrada get requesta za prikazivanje liste proizvoda za menadzera
+    @GetMapping("/proizvodi")
+    public String prikaziProizvode(Model model) {
+
+        model.addAttribute("artikli", artikalService.getAll());
+        Locale serbianLatinLocale = new Locale.Builder().setLanguage("sr").setRegion("RS").setScript("Latn").build();
+        LocaleContextHolder.setLocale(serbianLatinLocale);
+        return "menadzerProizvodi";
+    }
+
+    //Obrada get requesta za promenu stanja akcije proizvoda
+    @GetMapping("/proizvodi/toggleAkcija/{id}")
+    public String promeniStanjeAkcije(@PathVariable int id) {
+
+        artikalService.toggleDiscount(id);
+        return "redirect:/menadzer/proizvodi";
+    }
+
+    @GetMapping("/proizvodi/toggleProdaja/{id}")
+    public String promeniStanjeProdaje(@PathVariable int id) {
+
+        artikalService.toggleNaMeniju(id);
+        return "redirect:/menadzer/proizvodi";
     }
 }

@@ -10,4 +10,6 @@ import java.util.List;
 public interface ArtikalRepository extends JpaRepository<Artikal, Integer> {
 
     List<Artikal> findByKategorija(String kategorija);
+    List<Artikal> findByKategorijaAndNaProdajiTrue(String kategorija);
+    List<Artikal> findByKategorijaNot(String kategorija);
 }

@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="@{../static/components/layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>Pregled proslava</title>
+
+</head>
+<body>
+
+<main layout:fragment="content">
+
+  <div th:insert="~{fragments/ManagerNavBar :: managerNavBar}">
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 px-4 py-5 bg-white border border-secondary">
+      <h1 class="text-center mb-4">Proizvodi</h1>
+
+      <!--Ispis u slucaju da je lista artikala prazna-->
+      <div th:if="${#lists.isEmpty(artikli)}">
+        <div class="text-white bg-primary fs-3 text-center py-2">
+          Nema zakazanih proslava.
+        </div>
+      </div>
+
+      <!--Ispis tabele u slucaju da lista artikala nije prazna-->
+      <div th:if="${not #lists.isEmpty(artikli)}" class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-primary">
+          <tr>
+            <th>ID</th>
+            <th>Ime</th>
+            <th>Kategorija</th>
+            <th>Cena</th>
+            <th>Akcija</th>
+            <th>Na prodaji</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="artikal : ${artikli}">
+            <td th:text="${artikal.getId()}"></td>
+            <td th:text="${artikal.getNaziv()}"></td>
+            <td th:text="${artikal.getKategorija()}"></td>
+            <td th:text="${#numbers.formatCurrency(artikal.getCena())}"></td>
+            <td>
+              <a th:if="${artikal.isNaAkciji()}" class="btn btn-sm btn-success w-75" th:href="@{/menadzer/proizvodi/toggleAkcija/{id}(id=${artikal.getId()})}">Na akciji</a>
+              <a th:if="${not artikal.isNaAkciji()}" class="btn btn-sm btn-danger w-75" th:href="@{/menadzer/proizvodi/toggleAkcija/{id}(id=${artikal.getId()})}">Regularna cena</a>
+            </td>
+            <td>
+              <a th:if="${artikal.isNaProdaji()}" class="btn btn-sm btn-success w-75" th:href="@{/menadzer/proizvodi/toggleProdaja/{id}(id=${artikal.getId()})}">Na meniju</a>
+              <a th:if="${not artikal.isNaProdaji()}" class="btn btn-sm btn-danger w-75" th:href="@{/menadzer/proizvodi/toggleProdaja/{id}(id=${artikal.getId()})}">Van menija</a>
+            </td>
+            <td>
+              <a class="btn btn-sm btn-primary w-75" th:href="@{/menadzer/prozivodi/{id}/izmeni(id=${artikal.getId()})}">Izmeni</a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>
