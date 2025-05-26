@@ -78,6 +78,7 @@ public class AuthenticationController {
 
         //Dodavanje korisnika u bazu podataka ukoliko je prosla validacija, izbacivanje greske ako ime ili email vec postoji u bazi
         String sifra = korisnik.getSifra();
+        korisnik.setUloga("KORISNIK");
         String uspeh = korisnikService.registrujKorisnika(korisnik);
         if (uspeh.equals("uspeh")) {
             try {

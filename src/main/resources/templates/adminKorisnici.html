@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="@{../static/components/layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>Korisnici</title>
+
+</head>
+<body>
+
+<main layout:fragment="content">
+
+  <div th:insert="~{fragments/AdminNavBar :: adminNavBar}">
+  </div>
+
+  <div th:insert="~{fragments/PretragaKorisnika :: pretragakorisnika('/admin/pretragaKorisnika')}">
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 px-4 py-5 bg-white border border-secondary">
+      <h1 class="text-center mb-4">Korisnici</h1>
+
+      <!--Ispis u slucaju da je lista korisnika prazna-->
+      <div th:if="${#lists.isEmpty(korisnici)}">
+        <div class="text-white bg-primary fs-3 text-center py-2">
+          Nema korisnika.
+        </div>
+      </div>
+
+      <!--Ispis tabele u slucaju da lista narudzbine nije prazna-->
+      <div th:if="${not #lists.isEmpty(korisnici)}" class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-primary">
+          <tr>
+            <th>ID</th>
+            <th>Korisnicko ime</th>
+            <th>Ime i prezime</th>
+            <th>Adresa</th>
+            <th>Uloga</th>
+            <th>Ugasi/vrati nalog</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="korisnik : ${korisnici}">
+            <td th:text="${korisnik.getId()}"></td>
+            <td th:text="${korisnik.getKorisnickoIme()}"></td>
+            <td th:text="${korisnik.getIme() + ' ' + korisnik.getPrezime()}"></td>
+            <td th:text="${korisnik.getAdresa()}"></td>
+            <td th:text="${korisnik.getUloga()}"></td>
+            <td>
+              <a th:if="${not korisnik.isJeObrisan() && korisnik.getId() != adminovID}" class="btn btn-sm btn-danger w-75"
+                 th:href="@{/admin/promeniObrisanStatus/{id}(id=${korisnik.getId()})}">Ugasi nalog</a>
+              <a th:if="${korisnik.isJeObrisan() && korisnik.getId() != adminovID}" class="btn btn-sm btn-success w-75"
+                 th:href="@{/admin/promeniObrisanStatus/{id}(id=${korisnik.getId()})}">Vrati nalog</a>
+              <a th:if="${korisnik.getId() == adminovID}" class="btn btn-sm btn-dark w-75">Trenutni nalog</a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

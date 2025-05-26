@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import projekat.kateringservis.models.Korisnik;
 import projekat.kateringservis.repositories.KorisnikRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,8 +34,8 @@ public class KorisnikService implements UserDetailsService {
 
         Optional<Korisnik> korisnikOptional = korisnikRepository.findByKorisnickoIme(username);
 
-        //Ukoliko korisnik sa datim imenom postoji, puni Spring Security User koriscenjem ugradjenog buildera, ukoliko ne vraca predefinisan izuzetak
-        if (korisnikOptional.isPresent()) {
+        //Ukoliko korisnik sa datim imenom postoji i nije ugasen nalog, puni Spring Security User koriscenjem ugradjenog buildera, ukoliko ne vraca predefinisan izuzetak
+        if (korisnikOptional.isPresent() && !korisnikOptional.get().isJeObrisan()) {
             Korisnik korisnik = korisnikOptional.get();
 
             return User.builder().username(korisnik.getKorisnickoIme()).password(korisnik.getSifra()).roles(korisnik.getUloga().split(",")).build();
@@ -61,14 +62,30 @@ public class KorisnikService implements UserDetailsService {
 
         //U sluvaju da su ime i email slobodni, enkriptuje sifru i cuva korisnika u bazu podataka
         korisnik.setSifra(bCryptPasswordEncoder.encode(korisnik.getSifra()));
-        korisnik.setUloga("KORISNIK");
         korisnikRepository.save(korisnik);
         return "uspeh";
-
     }
 
     //Metoda vraca korisnika po njegovom korisnickom imenu
     public Optional<Korisnik> getByKorisnickoime(String korisnickoIme) {
         return korisnikRepository.findByKorisnickoIme(korisnickoIme);
     }
+
+    //Metoda vraca sve korisnike
+    public List<Korisnik> getAll() { return korisnikRepository.findAll(); }
+
+    //Metoda gasi ili pali korisnicki nalog
+    public void toggleAccountState(int id) {
+        Optional<Korisnik> korisnik = korisnikRepository.findById(id);
+        if (korisnik.isPresent()) {
+            korisnik.get().setJeObrisan(!korisnik.get().isJeObrisan());
+            korisnikRepository.save(korisnik.get());
+        }
+    }
+
+    //Metoda za vracanje svih korisnika koji sadrze deo stringa u korisnickom imenu
+    public List<Korisnik> getAllByKorisnickoIme(String korisnickoIme) { return korisnikRepository.findByKorisnickoImeContainingIgnoreCase(korisnickoIme); }
+
+    //Metoda za hvatanje korisnika po id-u
+    public Optional<Korisnik> getByID(String korisnikID) { return korisnikRepository.findById(Integer.parseInt(korisnikID)); }
 }

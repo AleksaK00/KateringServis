@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="@{../static/components/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Registracija</title>
+
+</head>
+<body>
+
+<main layout:fragment="content">
+
+    <div th:insert="~{fragments/AdminNavBar :: adminNavBar}">
+    </div>
+
+    <div class="row mt-5 justify-content-center">
+        <!--registraciona forma-->
+        <div class="col-md-6">
+            <form method="post" th:action="@{/admin/noviKorisnik}" th:object="${korisnik}">
+                <div class="d-flex flex-row align-items-center justify-content-center">
+                    <h2 class="mb-0 me-3 text-body-secondary">Unos novog korisnika</h2>
+                </div>
+
+                <div class="divider d-flex align-items-center my-4"></div>
+
+                <!-- Input korisnicko ime -->
+                <div data-mdb-input-init class="form-outline mb-2">
+                    <label class="form-label" for="korisnickoIme">Korisničko ime</label>
+                    <input type="text" id="korisnickoIme" class="form-control form-control-lg" th:field="*{korisnickoIme}" required/>
+                </div>
+
+                <!-- Input email -->
+                <div data-mdb-input-init class="form-outline mb-2">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="text" id="email" class="form-control form-control-lg" th:field="*{email}" required/>
+                </div>
+
+                <!-- Input lozinke-->
+                <div data-mdb-input-init class="form-outline mb-2">
+                    <label class="form-label" for="sifra">Lozinka</label>
+                    <input type="password" id="sifra" class="form-control form-control-lg" th:field="*{sifra}" required/>
+                </div>
+
+                <!-- Input potvrde lozinke-->
+                <div data-mdb-input-init class="form-outline mb-2">
+                    <label class="form-label" for="sifraConfirm">Potvrda lozinke</label>
+                    <input type="password" id="sifraConfirm" class="form-control form-control-lg" name="passwordConfirm" required/>
+                </div>
+
+                <!-- Input ime -->
+                <div data-mdb-input-init class="form-outline mb-2">
+                    <label class="form-label" for="ime">Ime</label>
+                    <input type="text" id="ime" class="form-control form-control-lg" th:field="*{ime}" required/>
+                </div>
+
+                <!-- Input prezime -->
+                <div data-mdb-input-init class="form-outline mb-2">
+                    <label class="form-label" for="prezime">Prezime</label>
+                    <input type="text" id="prezime" class="form-control form-control-lg" th:field="*{prezime}" required/>
+                </div>
+
+                <!-- Input adresa -->
+                <div data-mdb-input-init class="form-outline mb-2">
+                    <label class="form-label" for="adresa">Adresa</label>
+                    <input type="text" id="adresa" class="form-control form-control-lg" th:field="*{adresa}" required/>
+                </div>
+
+                <!-- Input uloga -->
+                <div data-mdb-input-init class="form-outline mb-2">
+                    <label class="form-label" for="uloga">Uloga</label>
+                    <select id="uloga" class="form-control form-control-lg" th:field="*{uloga}">
+                        <option value="KORISNIK">Korisnik</option>
+                        <option value="ADMIN">Admin</option>
+                        <option value="MENADZER">Menadzer</option>
+                    </select>
+                </div>
+
+                <div class="text-center text-lg-start mt-4 pt-2">
+                    <input type="submit" class="btn btn-primary btn-lg" value="Dodaj">
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Poruka Greske -->
+    <div class="text-center">
+        <!--/*@thymesVar id="greska" type=""*/-->
+        <h3 class="text-body-secondary" th:if="${greska != null}" th:text="${greska}"></h3>
+    </div>
+
+</main>
+
+</body>
+</html>
