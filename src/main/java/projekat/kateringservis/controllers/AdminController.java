@@ -1,7 +1,5 @@
 package projekat.kateringservis.controllers;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -11,7 +9,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import projekat.kateringservis.helperClasses.MessageSender;
 import projekat.kateringservis.helperClasses.PrijavljeniKorisnikController;
 import projekat.kateringservis.models.Korisnik;
-import projekat.kateringservis.models.Narudzbina;
 import projekat.kateringservis.services.KorisnikService;
 import projekat.kateringservis.services.ProslavaService;
 
